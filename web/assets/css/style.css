@@ -133,11 +133,18 @@ body{
   overflow-y:auto;
   display:flex; flex-direction:column;
 }
-.events-list__header{
-  position:sticky; top:0; z-index:1;
-  background:inherit;
-  padding:12px; border-bottom:1px solid #e5e7eb;
-  display:flex; gap:8px; align-items:center; justify-content:space-between;
+.events-list__header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: inherit;
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+
+  display: flex;
+  flex-direction: column;      /* vertical stack */
+  gap: 8px;
+  align-items: stretch;        /* children fill width */
 }
 .events-list__header h2{ margin:0; font-size:18px; }
 .events-search{
@@ -167,5 +174,26 @@ body{
   .events-layout{ flex-direction:column; }
   .events-list{ width:100%; max-width:none; height:40vh; border-right:0; border-bottom:1px solid #e5e7eb; }
   .events-map{ height:60vh; }
+}
+
+.find-attractions-btn {
+  background: var(--accent);
+  color: #fcfcfc;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-top: 0.3rem;
+}
+
+.find-attractions-btn:hover {
+  filter: brightness(1.1);
+}
+
+#locationStatus {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 0.2rem 0 0;
 }
 

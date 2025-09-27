@@ -10,7 +10,17 @@
   <aside class="events-list" aria-label="Event list">
     <header class="events-list__header">
       <h2>Events</h2>
-      <input class="events-search" type="search" placeholder="Search events…" aria-label="Search events">
+       <input
+    class="events-search"
+    type="search"
+    placeholder="Search events…"
+    aria-label="Search events"
+    />
+
+  <button id="findAttractionsBtn" class="find-attractions-btn">
+    Find Nearby Attractions
+  </button>
+  <p id="locationStatus"></p>
     </header>
 
     <ul class="events-items">
@@ -18,17 +28,17 @@
       <li class="event-card">
         <h3 class="event-title">Sample Event One</h3>
         <p class="event-meta">Center City • Today 5:30 PM</p>
-        <button class="event-action">View</button>
+        <button class="event-action">Add to Schedule</button>
       </li>
       <li class="event-card">
         <h3 class="event-title">Sample Event Two</h3>
         <p class="event-meta">University City • Tomorrow 2:00 PM</p>
-        <button class="event-action">View</button>
+        <button class="event-action">Add to Schedule</button>
       </li>
       <li class="event-card">
         <h3 class="event-title">Sample Event Three</h3>
         <p class="event-meta">Old City • Sat 11:00 AM</p>
-        <button class="event-action">View</button>
+        <button class="event-action">Add to Schedule</button>
       </li>
     </ul>
   </aside>
@@ -43,11 +53,16 @@
   import { loadNav } from '../assets/js/include-nav.js';
   import { bootMap } from '../assets/js/map-setup.js';
 
+
   loadNav('events');
   const map = bootMap();
+
+  window.map = map;
 
   // Ensure Leaflet sizes correctly in the flex layout
   setTimeout(()=> map && map.invalidateSize(), 0);
   window.addEventListener('resize', ()=> map && map.invalidateSize());
 </script>
+<script src="../assets/js/find-attractions.js"></script>
+
 </body></html>
