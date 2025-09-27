@@ -1,60 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Schedule</title>
-  <link rel="stylesheet" href="../assets/css/schedule.css">
+  <link rel="stylesheet" href="../assets/css/schedule.css" />
+  <style>
+    #eventPopout {
+      width: min(640px, 92vw);
+      border: none;
+      border-radius: 12px;
+      padding: 0;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    #eventPopout::backdrop { background: rgba(0,0,0,.4); }
+    #eventPopoutForm { display: flex; flex-direction: column; }
+    .popout-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 16px; border-bottom:1px solid #e5e5e5;
+    }
+    .popout-body { padding:16px; }
+    .popout-close { border:0; background:transparent; font-size:18px; line-height:1; cursor:pointer; }
+    .popout-meta { color:#666; font-size:14px; margin-bottom:8px; }
+    .popout-extras { margin-top:12px; display:grid; gap:8px; }
+    .event-details-btn { border:1px solid #ddd; background:#fafafa; border-radius:8px; padding:6px 10px; cursor:pointer; }
+    .event-details-btn:hover { background:#f0f0f0; }
+    .card-like { border:1px solid #ddd; border-radius:8px; padding:8px; margin-top:6px; }
+  </style>
 </head>
 <body>
-<header style="width:100%;background:#3b82f6;color:#fff;padding:16px;text-align:center;margin:0 0 16px 0;">
-  <h1 style="margin:0;font-size:1.6rem;">Your Schedule & Events</h1>
-  <p style="margin:4px 0 0;">Plan your trip in Philadelphia!</p>
-</header>
+  <header style="width:100%;background:#3b82f6;color:#fff;padding:16px;text-align:center;margin:0 0 16px 0;">
+    <h1 style="margin:0;font-size:1.6rem;">Your Schedule & Events</h1>
+    <p style="margin:4px 0 0;">Plan your trip in Philadelphia!</p>
+  </header>
 
-<main id="schedule" role="main" aria-label="Schedule">
+  <main id="schedule" role="main" aria-label="Schedule">
+    <aside id="saved-events" aria-label="Saved events">
+      <h2>Saved Events</h2>
+      <ul id="events-list" role="list">
+        <li class="event-item" data-id="e_1" data-start="2025-10-03T09:00" data-end="2025-10-03T10:00" data-place="Neighborhood">
+          <h3 class="event-title">Your event</h3>
+          <p class="event-meta">Neighborhood • Date & Time</p>
+          <p class="event-desc">Event description popout</p>
+          <button type="button" class="event-details-btn" data-action="open-desc">Details</button>
+        </li>
 
-  <aside id="saved-events" aria-label="Saved events">
-    <h2>Saved Events</h2>
-    <ul id="events-list" role="list">
-      <li class="event-item" data-id="e_1">
-        <h3 class="event-title">Your event</h3>
-        <p class="event-meta">Neighborhood • Date & Time</p>
-        <p class="event-desc-link">Event description popout</p>
-      </li>
-    </ul>
-    <p id="events-empty" hidden>No saved events yet.</p>
-  </aside>
+        <li class="event-item" data-id="e_2" data-start="2025-10-03T10:00" data-end="2025-10-03T10:30" data-place="Center City">
+          <h3 class="event-title"></h3>
+          <p class="event-meta">Center City • Oct 3, 10:00 AM</p>
+          <p class="event-desc">Great espresso spot.</p>
+          <button type="button" class="event-details-btn" data-action="open-desc">Details</button>
+        </li>
+      </ul>
+      <p id="events-empty" hidden>No saved events yet.</p>
+    </aside>
+    <section id="detail-panel" aria-live="polite">
+      <article id="event-detail" hidden aria-labelledby="detail-title">
+        <h2 id="detail-title">Event Title</h2>
+        <p id="detail-meta">When • Where</p>
 
-  <section id="detail-panel" aria-live="polite">
-    <article id="event-detail" hidden aria-labelledby="detail-title">
-      <h2 id="detail-title">Event Title</h2>
-      <p id="detail-meta">When • Where</p>
+        <section aria-label="Description">
+          <h3>Description</h3>
+          <p id="detail-desc">Description text here.</p>
+        </section>
 
-      <section aria-label="Description">
-        <h3>Description</h3>
-        <p id="detail-desc">Description text here.</p>
-      </section>
+        <section aria-label="Nearby recommendations">
+          <h3>Recommended nearby</h3>
+          <ul id="detail-recs" role="list"></ul>
+        </section>
+      </article>
 
-      <section aria-label="Nearby recommendations">
-        <h3>Recommended nearby</h3>
-        <ul id="detail-recs" role="list"></ul>
-      </section>
-    </article>
+      <article id="overall-schedule">
+        <h2>Your Calendar</h2>
+      </article>
+    </section>
+  </main>
 
-    <article id="overall-schedule">
-      <h2>Your Calendar</h2>
-    
-      </section>
-    </article>
-  </section>
-<section id = "schedule-agenda" aria-label="Schedule Agenda">
-  
-</section>
-</div>
-</main>
+  <dialog id="eventPopout">
+    <form method="dialog" id="eventPopoutForm">
+      <header class="popout-header">
+        <h3 id="popoutTitle">Event</h3>
+        <button class="popout-close" aria-label="Close">✕</button>
+      </header>
+      <div class="popout-body">
+        <div id="popoutMeta" class="popout-meta"></div>
+        <p id="popoutDesc"></p>
+        <div id="popoutExtras" class="popout-extras"></div>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    (function(){
+      const popout = document.getElementById('eventPopout');
+      const popoutTitle = document.getElementById('popoutTitle');
+      const popoutMeta  = document.getElementById('popoutMeta');
+      const popoutDesc  = document.getElementById('popoutDesc');
+      const popoutExtras= document.getElementById('popoutExtras');
+
+      document.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-action="open-desc"]');
+        if (!btn) return;
+        const item = btn.closest('.event-item');
+        if (!item) return;
+
+        const title = item.querySelector('.event-title')?.textContent?.trim() || 'Event';
+        const meta  = item.querySelector('.event-meta')?.textContent?.trim() || '';
+        const desc  = item.querySelector('.event-desc, .event-desc-link')?.textContent?.trim()
+                   || 'No description provided.';
+
+        popoutTitle.textContent = title;
+        popoutMeta.textContent  = meta;
+        popoutDesc.textContent  = desc;
+
+        popoutExtras.innerHTML = '';
+        const start = item.dataset.start ? new Date(item.dataset.start) : null;
+        const end   = item.dataset.end   ? new Date(item.dataset.end)   : null;
+        const place = item.dataset.place || '';
+        if (start) {
+          const t = document.createElement('div');
+          t.className = 'popout-meta';
+          t.textContent = end
+            ? `${start.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'})} – ${end.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'})}`
+            : start.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
+          popoutExtras.appendChild(t);
+        }
+        if (place) {
+          const p = document.createElement('div');
+          p.textContent = place;
+          popoutExtras.appendChild(p);
+        }
+
+        if (typeof popout.showModal === 'function') popout.showModal();
+        else popout.setAttribute('open',''); 
+      });
+
+
+      document.querySelector('#eventPopout .popout-close')?.addEventListener('click', () => {
+        popout.close();
+      });
+
+      popout.addEventListener('click', (e) => {
+        const rect = popout.getBoundingClientRect();
+        const inside = (
+          e.clientX >= rect.left && e.clientX <= rect.right &&
+          e.clientY >= rect.top  && e.clientY <= rect.bottom
+        );
+        if (!inside) popout.close();
+      });
+    })();
+  </script>
 </body>
 </html>
-
-<script>
-
-</script>
