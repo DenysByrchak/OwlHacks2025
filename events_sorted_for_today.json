@@ -1,5 +1,33 @@
 [
   {
+    "title": "SportLuxe Enclave: A City Fitness Fashion Show",
+    "date": "Sep 27",
+    "time": "5:00 PM",
+    "address": [
+      "City Fitness",
+      "Philadelphia, PA"
+    ],
+    "price": "$39",
+    "extracted_price": 39,
+    "thumbnail": "https://serpapi.com/searches/68d847fdb9fc5fad1f52405b/images/5be4ac4ecb84dc6172d5a126ddbc8c9a23c8acffb89cc5fe361214ab894ecbd6.jpeg",
+    "url": "https://www.eventbrite.com/e/sportluxe-enclave-a-city-fitness-fashion-show-tickets-1707861462609",
+    "distance_km": 3.3846723434091723
+  },
+  {
+    "title": "Philadelphia Oktoberfest",
+    "date": "Sep 27",
+    "time": "4:00 PM",
+    "address": [
+      "Beat The Bomb Philadelphia",
+      "Philadelphia, PA"
+    ],
+    "price": "$8",
+    "extracted_price": 8,
+    "thumbnail": "https://serpapi.com/searches/68d847fdb9fc5fad1f52405b/images/5be4ac4ecb84dc61d7ecf0f10287e88e946160c0830e1eb799218ac323e2963a.jpeg",
+    "url": "https://brauhausschmitz.com/oktoberfest/",
+    "distance_km": 3.564903737388665
+  },
+  {
     "title": "Totally 80's Homecoming",
     "date": "Sep 27",
     "time": "7:00 PM",
@@ -10,41 +38,7 @@
     "price": "$29",
     "extracted_price": 29,
     "thumbnail": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRiSr98cTcfmN6eJ24Z_lgq4sjLG-atn4PCCQxogDrBKiOy760_08-ZbMsFcn7HbyWBu0r-8L7D4ByWPm8",
+    "url": "https://phillyfringe.org/events/totally-80s-homecoming/",
     "distance_km": 3.7086193513518677
-  },
-  {
-    "title": "The Philadelphia Arena Polo Championship",
-    "date": "Sep 27",
-    "time": "11:00 AM",
-    "address": [
-      "Chamounix Equestrian Center",
-      "Philadelphia, PA"
-    ],
-    "thumbnail": "https://serpapi.com/searches/68d823f9ee028a6540aaacfe/images/5be4ac4ecb84dc61e446af6d7c8b90984b13680f78c8954bcb79e347fae6c171.jpeg",
-    "distance_km": 4.506053268778434
-  },
-  {
-    "title": "Cow Plop Bingo",
-    "date": "Sep 27",
-    "time": "12:00 PM",
-    "address": [
-      "Fox Chase Farm",
-      "Philadelphia, PA"
-    ],
-    "price": "$29",
-    "extracted_price": 29,
-    "thumbnail": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcStarVYB5JlzafjGfj_zfwcilbZuv0OL-dx5HuxRI3RrccNYx97BPWllIi-Pmlx7tHfjxz4OubB25s9ajg",
-    "distance_km": 13.773145392859876
-  },
-  {
-    "title": "Community Softball Game",
-    "date": "Sep 27",
-    "time": "10:00 AM",
-    "address": [
-      "Fox Chase Farm",
-      "Philadelphia, PA"
-    ],
-    "thumbnail": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS_CZLmt7rTkvUVlkbiCJl56rEc7-dgHQzq9Nc0la6pGcLoxGfJVV487VWkX67Qa0f-q85UK80b4PEYCF8",
-    "distance_km": 13.773145392859876
   }
 ]
