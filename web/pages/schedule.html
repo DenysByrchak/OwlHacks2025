@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Schedule</title>
+  <link rel="stylesheet" href="../assets/css/schedule.css">
+</head>
+<body>
+<header style="width:100%;background:#3b82f6;color:#fff;padding:16px;text-align:center;margin:0 0 16px 0;">
+  <h1 style="margin:0;font-size:1.6rem;">Your Schedule & Events</h1>
+  <p style="margin:4px 0 0;">Plan your trip in Philadelphia!</p>
+</header>
+
+<main id="schedule" role="main" aria-label="Schedule">
+
+  <aside id="saved-events" aria-label="Saved events">
+    <h2>Saved Events</h2>
+    <ul id="events-list" role="list">
+      <li class="event-item" data-id="e_1">
+        <h3 class="event-title">Your event</h3>
+        <p class="event-meta">Neighborhood • Date & Time</p>
+        <p class="event-desc-link">Event description popout</p>
+      </li>
+    </ul>
+    <p id="events-empty" hidden>No saved events yet.</p>
+  </aside>
+
+  <section id="detail-panel" aria-live="polite">
+    <article id="event-detail" hidden aria-labelledby="detail-title">
+      <h2 id="detail-title">Event Title</h2>
+      <p id="detail-meta">When • Where</p>
+
+      <section aria-label="Description">
+        <h3>Description</h3>
+        <p id="detail-desc">Description text here.</p>
+      </section>
+
+      <section aria-label="Nearby recommendations">
+        <h3>Recommended nearby</h3>
+        <ul id="detail-recs" role="list"></ul>
+      </section>
+    </article>
+
+    <article id="overall-schedule">
+      <h2>Your Calendar</h2>
+    
+      </section>
+    </article>
+  </section>
+
+</div>
+</main>
+</body>
+</html>
+
+<script>
+
+</script>

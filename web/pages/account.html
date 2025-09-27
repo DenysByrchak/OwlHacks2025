@@ -62,7 +62,6 @@ Delete My Account
 </button>
 
 
-<!-- Confirmation dialog -->
 <dialog id="delete-dialog">
 <form method="dialog" id="delete-form">
 <h3>Confirm Account Deletion</h3>
@@ -101,12 +100,11 @@ confirmDeleteBtn.addEventListener("click", (e) => {
 e.preventDefault();
 dialog.close();
 alert("Account deleted (replace with real logic).");
-// TODO: Call backend or clear local data here
 });
 
 const cancelBtn = document.getElementById("cancel-delete");
 
 cancelBtn.addEventListener("click", () => {
-  dialog.close(); // closes instantly without checking input
+  dialog.close();
 });
 </script>
