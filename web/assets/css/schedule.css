@@ -36,7 +36,7 @@ html, body {
 }
 ul[role="list"] { list-style: none; margin: 0; padding: 0; }
 
-.day-group { margin: 12px 0; }
+.day-group { margin: 30px 0; }
 .day-header { position: sticky; top: 0; background: #fff; padding: 6px 0; font-weight: 700; border-bottom: 1px solid #ddd; }
 .slot { border: 1px solid #ddd; border-radius: 8px; padding: 8px; margin: 8px 0; }
 .slot .when { font-weight: 600; margin-right: 6px; }
