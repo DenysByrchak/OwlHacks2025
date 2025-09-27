@@ -9,7 +9,7 @@
     ],
     "price": "$39",
     "extracted_price": 39,
-    "thumbnail": "https://serpapi.com/searches/68d847fdb9fc5fad1f52405b/images/5be4ac4ecb84dc6172d5a126ddbc8c9a23c8acffb89cc5fe361214ab894ecbd6.jpeg",
+    "thumbnail": "https://serpapi.com/searches/68d876966adf277207e02db1/images/f53cf122aeba552a1dce8f8868bd273d4fb2a89a08c2fe26fd8db92cf82b15c1.jpeg",
     "url": "https://www.eventbrite.com/e/sportluxe-enclave-a-city-fitness-fashion-show-tickets-1707861462609",
     "distance_km": 3.3846723434091723
   },
@@ -23,22 +23,8 @@
     ],
     "price": "$8",
     "extracted_price": 8,
-    "thumbnail": "https://serpapi.com/searches/68d847fdb9fc5fad1f52405b/images/5be4ac4ecb84dc61d7ecf0f10287e88e946160c0830e1eb799218ac323e2963a.jpeg",
+    "thumbnail": "https://serpapi.com/searches/68d876966adf277207e02db1/images/f53cf122aeba552a0fc786cf8f8f5e337a324fff0adfbb9ea2aa4693f3e94bc3.jpeg",
     "url": "https://brauhausschmitz.com/oktoberfest/",
     "distance_km": 3.564903737388665
-  },
-  {
-    "title": "Totally 80's Homecoming",
-    "date": "Sep 27",
-    "time": "7:00 PM",
-    "address": [
-      "Red Rum Theater",
-      "Philadelphia, PA"
-    ],
-    "price": "$29",
-    "extracted_price": 29,
-    "thumbnail": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRiSr98cTcfmN6eJ24Z_lgq4sjLG-atn4PCCQxogDrBKiOy760_08-ZbMsFcn7HbyWBu0r-8L7D4ByWPm8",
-    "url": "https://phillyfringe.org/events/totally-80s-homecoming/",
-    "distance_km": 3.7086193513518677
   }
 ]

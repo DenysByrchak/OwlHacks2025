@@ -24,10 +24,6 @@ def serve_partials(path):
 def serve_assets(path):
     return send_from_directory("web/assets", path)
 
-@app.route("/events")
-def serve_events_page():
-    return send_from_directory("web/pages", "events.html")
-
 # 🔹 Serve event data
 @app.route("/api/events")
 def serve_events():
