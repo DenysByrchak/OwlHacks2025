@@ -63,3 +63,11 @@ ul[role="list"] { list-style: none; margin: 0; padding: 0; }
 .popout-meta { color:#666; font-size:14px; margin-bottom:8px; }
 .popout-extras { margin-top:12px; display:grid; gap:8px; }
 
+.event-actions { display:flex; gap:8px; margin-top:8px; }
+.btn-del, .btn-details {
+  border:1px solid #ddd; background:#fafafa; border-radius:8px; padding:6px 10px; cursor:pointer;
+}
+.btn-del:hover { background:#ffecec; border-color:#f3c2c2; }
+.btn-del { color:#b00020; }
+.fade-out { opacity:0; height:0 !important; margin:0 !important; padding-top:0 !important; padding-bottom:0 !important; transition: all .25s ease; overflow:hidden; }
+
