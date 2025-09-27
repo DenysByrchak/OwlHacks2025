@@ -36,6 +36,22 @@
     .event-details-btn { border: 1px solid #ddd; background: #fafafa; border-radius: 20px; padding: 6px 10px; cursor: pointer; }
     .event-details-btn:hover { background: #f0f0f0; }
     .card-like { border: 1px solid #ddd; border-radius: 14px; padding: 8px; margin-top: 6px; }
+
+    /* Mini calendar + agenda */
+    .calendar-wrap { margin-top: 8px; }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: .5rem; }
+    .calendar-head { text-align: center; font-weight: 600; font-size: .85rem; }
+    .calendar-cell { border: 1px solid #ddd; border-radius: .5rem; padding: .5rem; min-height: 68px; text-align: left; background:#fff; }
+    .calendar-day-num { font-weight: 600; margin-bottom: .25rem; }
+    .calendar-dots { margin-top: .25rem; display: flex; gap: 4px; flex-wrap: wrap; }
+    .calendar-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .8; }
+    .agenda-day { position: sticky; top: 0; background: #fff; z-index: 1; padding: .5rem 0; border-bottom: 1px solid #eee; }
+    .agenda-item { border: 1px solid #ddd; border-radius: .5rem; padding: .5rem .75rem; margin: .5rem 0; background:#fff; }
+    .agenda-meta { color: #666; font-size: .85rem; }
+    .view-toggle { display:flex; gap:.5rem; align-items:center; margin: .5rem 0 1rem; }
+    .view-toggle button { border:1px solid #ddd; background:#fafafa; border-radius:8px; padding:6px 10px; cursor:pointer; }
+    .view-toggle button.active { background:#e9f2ff; border-color:#bcd7ff; }
+
   </style>
 </head>
 
