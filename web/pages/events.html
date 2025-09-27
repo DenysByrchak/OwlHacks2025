@@ -1,37 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Critical meta -->
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Map & Events</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <link rel="stylesheet" href="../assets/css/style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Events in Philadelphia</title>
+
+  <!-- CSS (load synchronously so map has height/styles) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+  <link rel="stylesheet" href="/assets/css/bootstrap-overrides.css">
+  <link rel="stylesheet" href="/assets/css/events.css">
+
+  <!-- Bootstrap JS loader (CSS stays static) -->
+  <script type="module">
+    import { loadHead } from '../assets/js/include-head.js';
+    loadHead();
+  </script>
 </head>
 <body>
+  <!-- Navbar mount -->
   <div id="nav-root"></div>
 
-  <main class="events-layout" role="main">
-    <aside class="events-list" aria-label="Event list">
-      <header class="events-list__header">
-        <h2>Events</h2>
-        <input class="events-search" type="search" placeholder="Search events…" aria-label="Search events">
-      </header>
-
-      <ul class="events-items" id="events-list">
-        <!-- Event cards will be injected here -->
+  <main class="events-layout">
+    <!-- Left: Events list -->
+    <aside class="events-list">
+      <div class="events-list__header">
+        <h2 class="mb-0">Events</h2>
+        <input class="events-search" id="search" placeholder="Search events…">
+      </div>
+      <ul id="eventsList" class="events-items">
+        <!-- Populated by JS -->
       </ul>
     </aside>
 
-    <section class="events-map" aria-label="Map">
-      <div id="map"></div>
+    <!-- Right: Map -->
+    <section class="events-map">
+      <div id="map" aria-label="Events map of Philadelphia"></div>
     </section>
   </main>
 
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <!-- Leaflet JS must load before bootMap() -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js" defer></script>
   <script type="module">
     import { loadNav } from '../assets/js/include-nav.js';
     import { bootMap } from '../assets/js/map-setup.js';
 
+    // Inject navbar and mark current page active
+    loadNav('/pages/events.html');
+
+    // Wait for Leaflet to be available, then boot the map
+    const ready = () => window.L ? Promise.resolve() : new Promise(r => {
+      const i = setInterval(() => { if (window.L) { clearInterval(i); r(); } }, 20);
+    });
+    ready().then(() => bootMap());
+    
+    
+    
     loadNav('events');
     const map = bootMap();
 
