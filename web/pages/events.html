@@ -54,6 +54,42 @@
       const i = setInterval(() => { if (window.L) { clearInterval(i); r(); } }, 20);
     });
     ready().then(() => bootMap());
+    
+    
+    
+    loadNav('events');
+    const map = bootMap();
+
+    // Ensure Leaflet sizes correctly in the flex layout
+    setTimeout(() => map && map.invalidateSize(), 0);
+    window.addEventListener('resize', () => map && map.invalidateSize());
+
+    // Load events from backend and render them
+    async function loadEvents() {
+      const list = document.getElementById("events-list");
+      list.innerHTML = "";
+
+      try {
+        const res = await fetch("/api/events");
+        const events = await res.json();
+
+        events.forEach(event => {
+          const li = document.createElement("li");
+          li.className = "event-card";
+          li.innerHTML = `
+            <h3 class="event-title">${event.title}</h3>
+            <p class="event-meta">${event.neighborhood} • ${event.time}</p>
+            <button class="event-action">View</button>
+          `;
+          list.appendChild(li);
+        });
+      } catch (err) {
+        list.innerHTML = `<li class="event-card">Error loading events 😢</li>`;
+        console.error("Failed to load events:", err);
+      }
+    }
+
+    loadEvents();
   </script>
 </body>
 </html>
