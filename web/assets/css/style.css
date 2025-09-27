@@ -1,0 +1,20 @@
+.find-attractions-btn {
+  background: var(--accent);
+  color: #fcfcfc;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-top: 0.3rem;
+}
+
+.find-attractions-btn:hover {
+  filter: brightness(1.1);
+}
+
+#locationStatus {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: 0.2rem 0 0;
+}
