@@ -1,0 +1,1167 @@
+{
+  "plus_code": {
+    "compound_code": "XV98+RMW Philadelphia, PA, USA",
+    "global_code": "87F6XV98+RMW"
+  },
+  "results": [
+    {
+      "address_components": [
+        {
+          "long_name": "1209",
+          "short_name": "1209",
+          "types": [
+            "street_number"
+          ]
+        },
+        {
+          "long_name": "Day Street",
+          "short_name": "Day St",
+          "types": [
+            "route"
+          ]
+        },
+        {
+          "long_name": "North Philadelphia",
+          "short_name": "North Philadelphia",
+          "types": [
+            "neighborhood",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia County",
+          "short_name": "Philadelphia County",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        },
+        {
+          "long_name": "19125",
+          "short_name": "19125",
+          "types": [
+            "postal_code"
+          ]
+        },
+        {
+          "long_name": "3903",
+          "short_name": "3903",
+          "types": [
+            "postal_code_suffix"
+          ]
+        }
+      ],
+      "formatted_address": "1209 Day St, Philadelphia, PA 19125, USA",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 39.9696535,
+            "lng": -75.13326789999999
+          },
+          "southwest": {
+            "lat": 39.9695808,
+            "lng": -75.1333721
+          }
+        },
+        "location": {
+          "lat": 39.9696259,
+          "lng": -75.1333197
+        },
+        "location_type": "ROOFTOP",
+        "viewport": {
+          "northeast": {
+            "lat": 39.97096613029149,
+            "lng": -75.1319710197085
+          },
+          "southwest": {
+            "lat": 39.9682681697085,
+            "lng": -75.13466898029151
+          }
+        }
+      },
+      "navigation_points": [
+        {
+          "location": {
+            "latitude": 39.9696374,
+            "longitude": -75.1333152
+          }
+        }
+      ],
+      "place_id": "ChIJ84FvkGnIxokRlPdcWUD-WH0",
+      "types": [
+        "premise",
+        "street_address"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "1211",
+          "short_name": "1211",
+          "types": [
+            "street_number"
+          ]
+        },
+        {
+          "long_name": "Day Street",
+          "short_name": "Day St",
+          "types": [
+            "route"
+          ]
+        },
+        {
+          "long_name": "North Philadelphia",
+          "short_name": "North Philadelphia",
+          "types": [
+            "neighborhood",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia County",
+          "short_name": "Philadelphia County",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        },
+        {
+          "long_name": "19125",
+          "short_name": "19125",
+          "types": [
+            "postal_code"
+          ]
+        },
+        {
+          "long_name": "3903",
+          "short_name": "3903",
+          "types": [
+            "postal_code_suffix"
+          ]
+        }
+      ],
+      "formatted_address": "1211 Day St, Philadelphia, PA 19125, USA",
+      "geometry": {
+        "location": {
+          "lat": 39.969698,
+          "lng": -75.133225
+        },
+        "location_type": "ROOFTOP",
+        "viewport": {
+          "northeast": {
+            "lat": 39.9710469802915,
+            "lng": -75.1318760197085
+          },
+          "southwest": {
+            "lat": 39.9683490197085,
+            "lng": -75.1345739802915
+          }
+        }
+      },
+      "navigation_points": [
+        {
+          "location": {
+            "latitude": 39.9696601,
+            "longitude": -75.1333304
+          }
+        }
+      ],
+      "place_id": "ChIJm8QukGnIxokRTigKjx7aA54",
+      "types": [
+        "street_address",
+        "subpremise"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "221",
+          "short_name": "221",
+          "types": [
+            "street_number"
+          ]
+        },
+        {
+          "long_name": "East Girard Avenue",
+          "short_name": "E Girard Ave",
+          "types": [
+            "route"
+          ]
+        },
+        {
+          "long_name": "North Philadelphia",
+          "short_name": "North Philadelphia",
+          "types": [
+            "neighborhood",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia County",
+          "short_name": "Philadelphia County",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        },
+        {
+          "long_name": "19125",
+          "short_name": "19125",
+          "types": [
+            "postal_code"
+          ]
+        },
+        {
+          "long_name": "3936",
+          "short_name": "3936",
+          "types": [
+            "postal_code_suffix"
+          ]
+        }
+      ],
+      "formatted_address": "221 E Girard Ave, Philadelphia, PA 19125, USA",
+      "geometry": {
+        "location": {
+          "lat": 39.9694849,
+          "lng": -75.1332061
+        },
+        "location_type": "ROOFTOP",
+        "viewport": {
+          "northeast": {
+            "lat": 39.97083388029149,
+            "lng": -75.1318571197085
+          },
+          "southwest": {
+            "lat": 39.96813591970849,
+            "lng": -75.1345550802915
+          }
+        }
+      },
+      "navigation_points": [
+        {
+          "location": {
+            "latitude": 39.9694351,
+            "longitude": -75.1331926
+          }
+        }
+      ],
+      "place_id": "ChIJO4fgkGnIxokRudqUoYjBrjU",
+      "plus_code": {
+        "compound_code": "XV98+QP Philadelphia, PA, USA",
+        "global_code": "87F6XV98+QP"
+      },
+      "types": [
+        "establishment",
+        "laundry",
+        "point_of_interest"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "1212",
+          "short_name": "1212",
+          "types": [
+            "street_number"
+          ]
+        },
+        {
+          "long_name": "Day Street",
+          "short_name": "Day St",
+          "types": [
+            "route"
+          ]
+        },
+        {
+          "long_name": "North Philadelphia",
+          "short_name": "North Philadelphia",
+          "types": [
+            "neighborhood",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia County",
+          "short_name": "Philadelphia County",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        },
+        {
+          "long_name": "19125",
+          "short_name": "19125",
+          "types": [
+            "postal_code"
+          ]
+        },
+        {
+          "long_name": "3904",
+          "short_name": "3904",
+          "types": [
+            "postal_code_suffix"
+          ]
+        }
+      ],
+      "formatted_address": "1212 Day St, Philadelphia, PA 19125, USA",
+      "geometry": {
+        "location": {
+          "lat": 39.9696379,
+          "lng": -75.13351109999999
+        },
+        "location_type": "ROOFTOP",
+        "viewport": {
+          "northeast": {
+            "lat": 39.9709868802915,
+            "lng": -75.1321621197085
+          },
+          "southwest": {
+            "lat": 39.9682889197085,
+            "lng": -75.1348600802915
+          }
+        }
+      },
+      "navigation_points": [
+        {
+          "location": {
+            "latitude": 39.9696416,
+            "longitude": -75.1335007
+          }
+        }
+      ],
+      "place_id": "ChIJr-n8mmnIxokRr3LdB-3vzwk",
+      "plus_code": {
+        "compound_code": "XV98+VH Philadelphia, PA, USA",
+        "global_code": "87F6XV98+VH"
+      },
+      "types": [
+        "street_address"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "1208",
+          "short_name": "1208",
+          "types": [
+            "street_number"
+          ]
+        },
+        {
+          "long_name": "Day Street",
+          "short_name": "Day St",
+          "types": [
+            "route"
+          ]
+        },
+        {
+          "long_name": "North Philadelphia",
+          "short_name": "North Philadelphia",
+          "types": [
+            "neighborhood",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia County",
+          "short_name": "Philadelphia County",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        },
+        {
+          "long_name": "19125",
+          "short_name": "19125",
+          "types": [
+            "postal_code"
+          ]
+        }
+      ],
+      "formatted_address": "1208 Day St, Philadelphia, PA 19125, USA",
+      "geometry": {
+        "location": {
+          "lat": 39.9695723,
+          "lng": -75.1333674
+        },
+        "location_type": "RANGE_INTERPOLATED",
+        "viewport": {
+          "northeast": {
+            "lat": 39.97092128029149,
+            "lng": -75.13201841970849
+          },
+          "southwest": {
+            "lat": 39.96822331970849,
+            "lng": -75.1347163802915
+          }
+        }
+      },
+      "place_id": "EigxMjA4IERheSBTdCwgUGhpbGFkZWxwaGlhLCBQQSAxOTEyNSwgVVNBIhsSGQoUChIJs7MUhWnIxokRjtCJX6ztoAMQuAk",
+      "types": [
+        "street_address"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "XV98+RM",
+          "short_name": "XV98+RM",
+          "types": [
+            "plus_code"
+          ]
+        },
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia County",
+          "short_name": "Philadelphia County",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        }
+      ],
+      "formatted_address": "XV98+RM Philadelphia, PA, USA",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 39.969625,
+            "lng": -75.13325
+          },
+          "southwest": {
+            "lat": 39.9695,
+            "lng": -75.133375
+          }
+        },
+        "location": {
+          "lat": 39.9696,
+          "lng": -75.13329999999999
+        },
+        "location_type": "GEOMETRIC_CENTER",
+        "viewport": {
+          "northeast": {
+            "lat": 39.97091148029149,
+            "lng": -75.1319635197085
+          },
+          "southwest": {
+            "lat": 39.9682135197085,
+            "lng": -75.13466148029153
+          }
+        }
+      },
+      "place_id": "GhIJzhlR2hv8Q0ARoiO5_IfIUsA",
+      "plus_code": {
+        "compound_code": "XV98+RM Philadelphia, PA, USA",
+        "global_code": "87F6XV98+RM"
+      },
+      "types": [
+        "plus_code"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "1298-1200",
+          "short_name": "1298-1200",
+          "types": [
+            "street_number"
+          ]
+        },
+        {
+          "long_name": "Day Street",
+          "short_name": "Day St",
+          "types": [
+            "route"
+          ]
+        },
+        {
+          "long_name": "North Philadelphia",
+          "short_name": "North Philadelphia",
+          "types": [
+            "neighborhood",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia County",
+          "short_name": "Philadelphia County",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        },
+        {
+          "long_name": "19125",
+          "short_name": "19125",
+          "types": [
+            "postal_code"
+          ]
+        }
+      ],
+      "formatted_address": "1298-1200 Day St, Philadelphia, PA 19125, USA",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 39.9705439,
+            "lng": -75.1332163
+          },
+          "southwest": {
+            "lat": 39.9693255,
+            "lng": -75.1339629
+          }
+        },
+        "location": {
+          "lat": 39.9699348,
+          "lng": -75.13358939999999
+        },
+        "location_type": "GEOMETRIC_CENTER",
+        "viewport": {
+          "northeast": {
+            "lat": 39.9712836802915,
+            "lng": -75.1322406197085
+          },
+          "southwest": {
+            "lat": 39.9685857197085,
+            "lng": -75.1349385802915
+          }
+        }
+      },
+      "place_id": "ChIJs7MUhWnIxokRjtCJX6ztoAM",
+      "types": [
+        "route"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "Fishtown",
+          "short_name": "Fishtown",
+          "types": [
+            "neighborhood",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia County",
+          "short_name": "Philadelphia County",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        }
+      ],
+      "formatted_address": "Fishtown, Philadelphia, PA, USA",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 39.98139339999999,
+            "lng": -75.1199778
+          },
+          "southwest": {
+            "lat": 39.9629378,
+            "lng": -75.1373716
+          }
+        },
+        "location": {
+          "lat": 39.9709764,
+          "lng": -75.1284805
+        },
+        "location_type": "APPROXIMATE",
+        "viewport": {
+          "northeast": {
+            "lat": 39.98139339999999,
+            "lng": -75.1199778
+          },
+          "southwest": {
+            "lat": 39.9629378,
+            "lng": -75.1373716
+          }
+        }
+      },
+      "place_id": "ChIJRUM_ZEHIxokRQtad17sEpIs",
+      "types": [
+        "neighborhood",
+        "political"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "19125",
+          "short_name": "19125",
+          "types": [
+            "postal_code"
+          ]
+        },
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        }
+      ],
+      "formatted_address": "Philadelphia, PA 19125, USA",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 39.991945,
+            "lng": -75.107557
+          },
+          "southwest": {
+            "lat": 39.9592959,
+            "lng": -75.1359458
+          }
+        },
+        "location": {
+          "lat": 39.9793657,
+          "lng": -75.1253492
+        },
+        "location_type": "APPROXIMATE",
+        "viewport": {
+          "northeast": {
+            "lat": 39.991945,
+            "lng": -75.107557
+          },
+          "southwest": {
+            "lat": 39.9592959,
+            "lng": -75.1359458
+          }
+        }
+      },
+      "place_id": "ChIJt5VGJjnIxokRNDQ22Htyv3Y",
+      "types": [
+        "postal_code"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "North Philadelphia",
+          "short_name": "North Philadelphia",
+          "types": [
+            "neighborhood",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Cheltenham Township",
+          "short_name": "Cheltenham Township",
+          "types": [
+            "administrative_area_level_3",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia County",
+          "short_name": "Philadelphia County",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        }
+      ],
+      "formatted_address": "North Philadelphia, Philadelphia, PA, USA",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 40.0846758,
+            "lng": -75.0560165
+          },
+          "southwest": {
+            "lat": 39.9595121,
+            "lng": -75.1926845
+          }
+        },
+        "location": {
+          "lat": 40.0145387,
+          "lng": -75.1311264
+        },
+        "location_type": "APPROXIMATE",
+        "viewport": {
+          "northeast": {
+            "lat": 40.0846758,
+            "lng": -75.0560165
+          },
+          "southwest": {
+            "lat": 39.9595121,
+            "lng": -75.1926845
+          }
+        }
+      },
+      "place_id": "ChIJe5EmUbm3xokRLvQYyTucxi4",
+      "types": [
+        "neighborhood",
+        "political"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "Philadelphia County",
+          "short_name": "Philadelphia County",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        }
+      ],
+      "formatted_address": "Philadelphia County, Philadelphia, PA, USA",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 40.137992,
+            "lng": -74.9557629
+          },
+          "southwest": {
+            "lat": 39.8674639,
+            "lng": -75.280266
+          }
+        },
+        "location": {
+          "lat": 40.0152766,
+          "lng": -75.1311874
+        },
+        "location_type": "APPROXIMATE",
+        "viewport": {
+          "northeast": {
+            "lat": 40.137992,
+            "lng": -74.9557629
+          },
+          "southwest": {
+            "lat": 39.8674639,
+            "lng": -75.280266
+          }
+        }
+      },
+      "place_id": "ChIJ60u11Ni3xokRhBCHQtzJmsM",
+      "types": [
+        "administrative_area_level_2",
+        "political"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia County",
+          "short_name": "Philadelphia County",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        }
+      ],
+      "formatted_address": "Philadelphia, PA, USA",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 40.137992,
+            "lng": -74.95576310000001
+          },
+          "southwest": {
+            "lat": 39.8670039,
+            "lng": -75.280266
+          }
+        },
+        "location": {
+          "lat": 39.9525839,
+          "lng": -75.1652215
+        },
+        "location_type": "APPROXIMATE",
+        "viewport": {
+          "northeast": {
+            "lat": 40.137992,
+            "lng": -74.95576310000001
+          },
+          "southwest": {
+            "lat": 39.8670039,
+            "lng": -75.280266
+          }
+        }
+      },
+      "place_id": "ChIJ60u11Ni3xokRwVg-jNgU9Yk",
+      "types": [
+        "locality",
+        "political"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        }
+      ],
+      "formatted_address": "Pennsylvania, USA",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 42.5141576,
+            "lng": -74.6895609
+          },
+          "southwest": {
+            "lat": 39.71979899999999,
+            "lng": -80.51984829999999
+          }
+        },
+        "location": {
+          "lat": 41.2033216,
+          "lng": -77.1945247
+        },
+        "location_type": "APPROXIMATE",
+        "viewport": {
+          "northeast": {
+            "lat": 42.5141576,
+            "lng": -74.6895609
+          },
+          "southwest": {
+            "lat": 39.71979899999999,
+            "lng": -80.51984829999999
+          }
+        }
+      },
+      "place_id": "ChIJieUyHiaALYgRPbQiUEchRsI",
+      "types": [
+        "administrative_area_level_1",
+        "political"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        }
+      ],
+      "formatted_address": "United States",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 74.071038,
+            "lng": -66.885417
+          },
+          "southwest": {
+            "lat": 18.7763,
+            "lng": 166.9999999
+          }
+        },
+        "location": {
+          "lat": 38.7945952,
+          "lng": -106.5348379
+        },
+        "location_type": "APPROXIMATE",
+        "viewport": {
+          "northeast": {
+            "lat": 74.071038,
+            "lng": -66.885417
+          },
+          "southwest": {
+            "lat": 18.7763,
+            "lng": 166.9999999
+          }
+        }
+      },
+      "place_id": "ChIJCzYy5IS16lQRQrfeQ5K5Oxw",
+      "types": [
+        "country",
+        "political"
+      ]
+    }
+  ],
+  "status": "OK"
+}

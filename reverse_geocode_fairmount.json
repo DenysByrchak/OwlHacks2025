@@ -1,0 +1,1010 @@
+{
+  "plus_code": {
+    "compound_code": "XR9H+66J Philadelphia, PA, USA",
+    "global_code": "87F6XR9H+66J"
+  },
+  "results": [
+    {
+      "address_components": [
+        {
+          "long_name": "2027",
+          "short_name": "2027",
+          "types": [
+            "street_number"
+          ]
+        },
+        {
+          "long_name": "Fairmount Avenue",
+          "short_name": "Fairmount Ave",
+          "types": [
+            "route"
+          ]
+        },
+        {
+          "long_name": "North Philadelphia",
+          "short_name": "North Philadelphia",
+          "types": [
+            "neighborhood",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia County",
+          "short_name": "Philadelphia County",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        },
+        {
+          "long_name": "19130",
+          "short_name": "19130",
+          "types": [
+            "postal_code"
+          ]
+        },
+        {
+          "long_name": "2610",
+          "short_name": "2610",
+          "types": [
+            "postal_code_suffix"
+          ]
+        }
+      ],
+      "formatted_address": "2027 Fairmount Ave, Philadelphia, PA 19130, USA",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 39.9681834,
+            "lng": -75.17161
+          },
+          "southwest": {
+            "lat": 39.9676225,
+            "lng": -75.17234549999999
+          }
+        },
+        "location": {
+          "lat": 39.967902,
+          "lng": -75.17191199999999
+        },
+        "location_type": "ROOFTOP",
+        "viewport": {
+          "northeast": {
+            "lat": 39.9692519302915,
+            "lng": -75.17062876970849
+          },
+          "southwest": {
+            "lat": 39.9665539697085,
+            "lng": -75.1733267302915
+          }
+        }
+      },
+      "navigation_points": [
+        {
+          "location": {
+            "latitude": 39.9678666,
+            "longitude": -75.1719603
+          },
+          "restricted_travel_modes": [
+            "DRIVE"
+          ]
+        },
+        {
+          "location": {
+            "latitude": 39.967351,
+            "longitude": -75.1719414
+          },
+          "restricted_travel_modes": [
+            "WALK"
+          ]
+        }
+      ],
+      "place_id": "ChIJA2A41cjHxokRq9tuWwPfGNA",
+      "types": [
+        "street_address",
+        "subpremise"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "2027",
+          "short_name": "2027",
+          "types": [
+            "street_number"
+          ]
+        },
+        {
+          "long_name": "Fairmount Avenue",
+          "short_name": "Fairmount Ave",
+          "types": [
+            "route"
+          ]
+        },
+        {
+          "long_name": "North Philadelphia",
+          "short_name": "North Philadelphia",
+          "types": [
+            "neighborhood",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia County",
+          "short_name": "Philadelphia County",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        },
+        {
+          "long_name": "19130",
+          "short_name": "19130",
+          "types": [
+            "postal_code"
+          ]
+        },
+        {
+          "long_name": "2610",
+          "short_name": "2610",
+          "types": [
+            "postal_code_suffix"
+          ]
+        }
+      ],
+      "formatted_address": "2027 Fairmount Ave, Philadelphia, PA 19130, USA",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 39.9681983,
+            "lng": -75.1716259
+          },
+          "southwest": {
+            "lat": 39.9681272,
+            "lng": -75.17174899999999
+          }
+        },
+        "location": {
+          "lat": 39.968157,
+          "lng": -75.1716869
+        },
+        "location_type": "ROOFTOP",
+        "viewport": {
+          "northeast": {
+            "lat": 39.9695117302915,
+            "lng": -75.1703384697085
+          },
+          "southwest": {
+            "lat": 39.9668137697085,
+            "lng": -75.1730364302915
+          }
+        }
+      },
+      "navigation_points": [
+        {
+          "location": {
+            "latitude": 39.9681564,
+            "longitude": -75.1716488
+          },
+          "restricted_travel_modes": [
+            "DRIVE"
+          ]
+        },
+        {
+          "location": {
+            "latitude": 39.9681133,
+            "longitude": -75.1712852
+          },
+          "restricted_travel_modes": [
+            "WALK"
+          ]
+        }
+      ],
+      "place_id": "ChIJMxwCLM_HxokR34MV7oW9hMg",
+      "types": [
+        "premise",
+        "street_address"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "2027",
+          "short_name": "2027",
+          "types": [
+            "street_number"
+          ]
+        },
+        {
+          "long_name": "Fairmount Avenue",
+          "short_name": "Fairmount Ave",
+          "types": [
+            "route"
+          ]
+        },
+        {
+          "long_name": "North Philadelphia",
+          "short_name": "North Philadelphia",
+          "types": [
+            "neighborhood",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia County",
+          "short_name": "Philadelphia County",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        },
+        {
+          "long_name": "19130",
+          "short_name": "19130",
+          "types": [
+            "postal_code"
+          ]
+        }
+      ],
+      "formatted_address": "2027 Fairmount Ave, Philadelphia, PA 19130, USA",
+      "geometry": {
+        "location": {
+          "lat": 39.9683364,
+          "lng": -75.17266479999999
+        },
+        "location_type": "ROOFTOP",
+        "viewport": {
+          "northeast": {
+            "lat": 39.96968538029149,
+            "lng": -75.17131581970848
+          },
+          "southwest": {
+            "lat": 39.9669874197085,
+            "lng": -75.17401378029149
+          }
+        }
+      },
+      "navigation_points": [
+        {
+          "location": {
+            "latitude": 39.9673816,
+            "longitude": -75.1726957
+          }
+        }
+      ],
+      "place_id": "ChIJu35ZOcnHxokRrTUi4cDYHm8",
+      "plus_code": {
+        "compound_code": "XR9G+8W Philadelphia, PA, USA",
+        "global_code": "87F6XR9G+8W"
+      },
+      "types": [
+        "establishment",
+        "museum",
+        "point_of_interest",
+        "tourist_attraction"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "XR9H+66",
+          "short_name": "XR9H+66",
+          "types": [
+            "plus_code"
+          ]
+        },
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia County",
+          "short_name": "Philadelphia County",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        }
+      ],
+      "formatted_address": "XR9H+66 Philadelphia, PA, USA",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 39.96812500000001,
+            "lng": -75.171875
+          },
+          "southwest": {
+            "lat": 39.968,
+            "lng": -75.172
+          }
+        },
+        "location": {
+          "lat": 39.9681,
+          "lng": -75.172
+        },
+        "location_type": "GEOMETRIC_CENTER",
+        "viewport": {
+          "northeast": {
+            "lat": 39.96941148029151,
+            "lng": -75.17058851970849
+          },
+          "southwest": {
+            "lat": 39.96671351970851,
+            "lng": -75.1732864802915
+          }
+        }
+      },
+      "place_id": "GhIJ-aBns-r7Q0ARXrpJDALLUsA",
+      "plus_code": {
+        "compound_code": "XR9H+66 Philadelphia, PA, USA",
+        "global_code": "87F6XR9H+66"
+      },
+      "types": [
+        "plus_code"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "Unnamed Road",
+          "short_name": "Unnamed Road",
+          "types": [
+            "route"
+          ]
+        },
+        {
+          "long_name": "North Philadelphia",
+          "short_name": "North Philadelphia",
+          "types": [
+            "neighborhood",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia County",
+          "short_name": "Philadelphia County",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        },
+        {
+          "long_name": "19130",
+          "short_name": "19130",
+          "types": [
+            "postal_code"
+          ]
+        }
+      ],
+      "formatted_address": "Unnamed Road, Philadelphia, PA 19130, USA",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 39.9690491,
+            "lng": -75.1715483
+          },
+          "southwest": {
+            "lat": 39.96750249999999,
+            "lng": -75.1716012
+          }
+        },
+        "location": {
+          "lat": 39.9682749,
+          "lng": -75.1715634
+        },
+        "location_type": "GEOMETRIC_CENTER",
+        "viewport": {
+          "northeast": {
+            "lat": 39.9696247802915,
+            "lng": -75.1702257697085
+          },
+          "southwest": {
+            "lat": 39.9669268197085,
+            "lng": -75.17292373029152
+          }
+        }
+      },
+      "place_id": "ChIJbbhcLs_HxokRSoWWrRDJCkw",
+      "types": [
+        "route"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "Fairmount",
+          "short_name": "Fairmount",
+          "types": [
+            "neighborhood",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia County",
+          "short_name": "Philadelphia County",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        },
+        {
+          "long_name": "19130",
+          "short_name": "19130",
+          "types": [
+            "postal_code"
+          ]
+        }
+      ],
+      "formatted_address": "Fairmount, Philadelphia, PA 19130, USA",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 39.9750365,
+            "lng": -75.1594234
+          },
+          "southwest": {
+            "lat": 39.9624324,
+            "lng": -75.1876982
+          }
+        },
+        "location": {
+          "lat": 39.9672371,
+          "lng": -75.1685579
+        },
+        "location_type": "APPROXIMATE",
+        "viewport": {
+          "northeast": {
+            "lat": 39.9750365,
+            "lng": -75.1594234
+          },
+          "southwest": {
+            "lat": 39.9624324,
+            "lng": -75.1876982
+          }
+        }
+      },
+      "place_id": "ChIJeyw1r87HxokRY9n0aS-TrcE",
+      "types": [
+        "neighborhood",
+        "political"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "19130",
+          "short_name": "19130",
+          "types": [
+            "postal_code"
+          ]
+        },
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia County",
+          "short_name": "Philadelphia County",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        }
+      ],
+      "formatted_address": "Philadelphia, PA 19130, USA",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 39.977173,
+            "lng": -75.15944209999999
+          },
+          "southwest": {
+            "lat": 39.9584879,
+            "lng": -75.194102
+          }
+        },
+        "location": {
+          "lat": 39.9682609,
+          "lng": -75.1749671
+        },
+        "location_type": "APPROXIMATE",
+        "viewport": {
+          "northeast": {
+            "lat": 39.977173,
+            "lng": -75.15944209999999
+          },
+          "southwest": {
+            "lat": 39.9584879,
+            "lng": -75.194102
+          }
+        }
+      },
+      "place_id": "ChIJrxVeBMnHxokROGSOrMhO1bE",
+      "types": [
+        "postal_code"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "North Philadelphia",
+          "short_name": "North Philadelphia",
+          "types": [
+            "neighborhood",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Cheltenham Township",
+          "short_name": "Cheltenham Township",
+          "types": [
+            "administrative_area_level_3",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia County",
+          "short_name": "Philadelphia County",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        }
+      ],
+      "formatted_address": "North Philadelphia, Philadelphia, PA, USA",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 40.0846758,
+            "lng": -75.0560165
+          },
+          "southwest": {
+            "lat": 39.9595121,
+            "lng": -75.1926845
+          }
+        },
+        "location": {
+          "lat": 40.0145387,
+          "lng": -75.1311264
+        },
+        "location_type": "APPROXIMATE",
+        "viewport": {
+          "northeast": {
+            "lat": 40.0846758,
+            "lng": -75.0560165
+          },
+          "southwest": {
+            "lat": 39.9595121,
+            "lng": -75.1926845
+          }
+        }
+      },
+      "place_id": "ChIJe5EmUbm3xokRLvQYyTucxi4",
+      "types": [
+        "neighborhood",
+        "political"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "Philadelphia County",
+          "short_name": "Philadelphia County",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        }
+      ],
+      "formatted_address": "Philadelphia County, Philadelphia, PA, USA",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 40.137992,
+            "lng": -74.9557629
+          },
+          "southwest": {
+            "lat": 39.8674639,
+            "lng": -75.280266
+          }
+        },
+        "location": {
+          "lat": 40.0152766,
+          "lng": -75.1311874
+        },
+        "location_type": "APPROXIMATE",
+        "viewport": {
+          "northeast": {
+            "lat": 40.137992,
+            "lng": -74.9557629
+          },
+          "southwest": {
+            "lat": 39.8674639,
+            "lng": -75.280266
+          }
+        }
+      },
+      "place_id": "ChIJ60u11Ni3xokRhBCHQtzJmsM",
+      "types": [
+        "administrative_area_level_2",
+        "political"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "Philadelphia",
+          "short_name": "Philadelphia",
+          "types": [
+            "locality",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Philadelphia County",
+          "short_name": "Philadelphia County",
+          "types": [
+            "administrative_area_level_2",
+            "political"
+          ]
+        },
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        }
+      ],
+      "formatted_address": "Philadelphia, PA, USA",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 40.137992,
+            "lng": -74.95576310000001
+          },
+          "southwest": {
+            "lat": 39.8670039,
+            "lng": -75.280266
+          }
+        },
+        "location": {
+          "lat": 39.9525839,
+          "lng": -75.1652215
+        },
+        "location_type": "APPROXIMATE",
+        "viewport": {
+          "northeast": {
+            "lat": 40.137992,
+            "lng": -74.95576310000001
+          },
+          "southwest": {
+            "lat": 39.8670039,
+            "lng": -75.280266
+          }
+        }
+      },
+      "place_id": "ChIJ60u11Ni3xokRwVg-jNgU9Yk",
+      "types": [
+        "locality",
+        "political"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "Pennsylvania",
+          "short_name": "PA",
+          "types": [
+            "administrative_area_level_1",
+            "political"
+          ]
+        },
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        }
+      ],
+      "formatted_address": "Pennsylvania, USA",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 42.5141576,
+            "lng": -74.6895609
+          },
+          "southwest": {
+            "lat": 39.71979899999999,
+            "lng": -80.51984829999999
+          }
+        },
+        "location": {
+          "lat": 41.2033216,
+          "lng": -77.1945247
+        },
+        "location_type": "APPROXIMATE",
+        "viewport": {
+          "northeast": {
+            "lat": 42.5141576,
+            "lng": -74.6895609
+          },
+          "southwest": {
+            "lat": 39.71979899999999,
+            "lng": -80.51984829999999
+          }
+        }
+      },
+      "place_id": "ChIJieUyHiaALYgRPbQiUEchRsI",
+      "types": [
+        "administrative_area_level_1",
+        "political"
+      ]
+    },
+    {
+      "address_components": [
+        {
+          "long_name": "United States",
+          "short_name": "US",
+          "types": [
+            "country",
+            "political"
+          ]
+        }
+      ],
+      "formatted_address": "United States",
+      "geometry": {
+        "bounds": {
+          "northeast": {
+            "lat": 74.071038,
+            "lng": -66.885417
+          },
+          "southwest": {
+            "lat": 18.7763,
+            "lng": 166.9999999
+          }
+        },
+        "location": {
+          "lat": 38.7945952,
+          "lng": -106.5348379
+        },
+        "location_type": "APPROXIMATE",
+        "viewport": {
+          "northeast": {
+            "lat": 74.071038,
+            "lng": -66.885417
+          },
+          "southwest": {
+            "lat": 18.7763,
+            "lng": 166.9999999
+          }
+        }
+      },
+      "place_id": "ChIJCzYy5IS16lQRQrfeQ5K5Oxw",
+      "types": [
+        "country",
+        "political"
+      ]
+    }
+  ],
+  "status": "OK"
+}
