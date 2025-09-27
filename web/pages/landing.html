@@ -1,0 +1,31 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Welcome to Philadelphia</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head><body>
+<div id="nav-root"></div>
+
+<header class="hero">
+  <h1 class="site-title">Site Title</h1>
+  <p class="headline">Welcome To Philadelphia</p>
+  <p class="tagline">Plan Your Activities Around the City</p>
+</header>
+
+<main class="map-wrap">
+  <div id="map" aria-label="Interactive map of Philadelphia"></div>
+  <button id="cta" class="cta">
+    <span class="cta-icon" aria-hidden="true">➜</span>
+    <span class="cta-text">Find An Attraction</span>
+  </button>
+</main>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script type="module">
+  import { loadNav } from '../assets/js/include-nav.js';
+  import { bootMap } from '../assets/js/map-setup.js';
+  loadNav('home');
+  bootMap();
+  document.getElementById('cta').onclick = ()=>location.href='./events.html';
+</script>
+</body></html>

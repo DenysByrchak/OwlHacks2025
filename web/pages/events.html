@@ -1,0 +1,53 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Map & Events</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head><body>
+<div id="nav-root"></div>
+
+<main class="events-layout" role="main">
+  <aside class="events-list" aria-label="Event list">
+    <header class="events-list__header">
+      <h2>Events</h2>
+      <input class="events-search" type="search" placeholder="Search events…" aria-label="Search events">
+    </header>
+
+    <ul class="events-items">
+      <!-- placeholders (no data wiring yet) -->
+      <li class="event-card">
+        <h3 class="event-title">Sample Event One</h3>
+        <p class="event-meta">Center City • Today 5:30 PM</p>
+        <button class="event-action">View</button>
+      </li>
+      <li class="event-card">
+        <h3 class="event-title">Sample Event Two</h3>
+        <p class="event-meta">University City • Tomorrow 2:00 PM</p>
+        <button class="event-action">View</button>
+      </li>
+      <li class="event-card">
+        <h3 class="event-title">Sample Event Three</h3>
+        <p class="event-meta">Old City • Sat 11:00 AM</p>
+        <button class="event-action">View</button>
+      </li>
+    </ul>
+  </aside>
+
+  <section class="events-map" aria-label="Map">
+    <div id="map"></div>
+  </section>
+</main>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script type="module">
+  import { loadNav } from '../assets/js/include-nav.js';
+  import { bootMap } from '../assets/js/map-setup.js';
+
+  loadNav('events');
+  const map = bootMap();
+
+  // Ensure Leaflet sizes correctly in the flex layout
+  setTimeout(()=> map && map.invalidateSize(), 0);
+  window.addEventListener('resize', ()=> map && map.invalidateSize());
+</script>
+</body></html>
