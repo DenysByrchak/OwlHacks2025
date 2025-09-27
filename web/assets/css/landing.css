@@ -1,0 +1,81 @@
+/* --- Vars --- */
+:root{
+  --nav-h: 60px;
+  --shell-pad: clamp(2px, 0.6vw, 10px);
+  --brand-blue: #2563eb;                    /* CTA + banner hue */
+
+  --banner-top: clamp(8px, 1.2cqi, 14px);
+  --banner-clear: clamp(44px, 8cqi, 60px);
+}
+
+/* Shell + map window */
+.map-shell{ padding: var(--shell-pad); }
+.map-card{
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  height: clamp(360px, calc(100dvh - var(--nav-h) - 2*var(--shell-pad) - 4px), 86vh);
+  box-shadow: 0 10px 34px rgba(15,23,42,.12);
+  container-type: inline-size;
+}
+#map{ position:absolute; inset:0; }
+
+/* Navbar translucency (landing only) */
+.landing .navbar{
+  background: rgba(255,255,255,.75) !important;
+  backdrop-filter: blur(10px) saturate(1.3);
+  border-bottom: 1px solid rgba(0,0,0,.06);
+  z-index: 1050;
+}
+
+/* ---------- GLASSY HERO BANNER (blue) ---------- */
+.hero-banner{
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  top: var(--banner-top);
+  z-index: 1030;
+
+  display: flex; align-items: center; justify-content: center;
+  gap: clamp(6px, 1.4cqi, 12px);
+  padding: clamp(.55rem, 1.6cqi, .9rem) clamp(.9rem, 2.2cqi, 1.2rem);
+  min-height: var(--banner-clear);
+  border-radius: clamp(10px, 1.6cqi, 14px);
+
+  backdrop-filter: blur(10px) saturate(1.3);
+  background: linear-gradient(135deg,
+              color-mix(in oklab, var(--brand-blue) 35%, transparent),
+              transparent 70%);
+  border: 1px solid rgba(255,255,255,.45);
+  box-shadow: 0 12px 40px rgba(15,23,42,.22);
+  color: #fff;
+  text-align: center;
+}
+.hero-title{ margin:0; font-weight:700; font-size: clamp(18px, 3.2cqi, 26px); }
+.hero-kicker{ margin:0; font-size: clamp(13px, 2.1cqi, 16px); opacity:.95; }
+.hero-sub{    margin:0; font-size: clamp(12px, 1.8cqi, 14px); opacity:.9; }
+
+/* ---------- GLASSY CTA (blue), no animation ---------- */
+.cta-float{
+  position:absolute; left:50%; transform:translateX(-50%);
+  bottom: clamp(12px, 2.6cqi, 22px);
+  z-index:1030; white-space:nowrap;
+}
+.btn-glass{
+  backdrop-filter: blur(8px) saturate(1.2);
+  background: color-mix(in oklab, var(--brand-blue) 35%, transparent);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.45);
+  border-radius: 999px;
+  box-shadow: 0 14px 38px rgba(37, 99, 235, .35);
+  transition: background .15s ease;   /* no translate/scale animation */
+}
+.btn-glass:hover{ background: color-mix(in oklab, var(--brand-blue) 45%, transparent); }
+.btn-glass:active{ background: color-mix(in oklab, var(--brand-blue) 55%, transparent); }
+
+/* ---------- Leaflet controls: MATCH EVENTS PAGE (defaults) ---------- */
+/* Use Leaflet’s own spacing & look; no custom offsets or glass here. */
+.map-card .leaflet-right  { right: 0; }
+.map-card .leaflet-left   { left: 0; }
+.map-card .leaflet-bottom { bottom: 0; }
+/* Let Leaflet keep its default control margins (10px). No overrides. */
