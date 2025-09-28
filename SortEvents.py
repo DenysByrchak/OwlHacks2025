@@ -13,9 +13,9 @@ def geocode_address(address_lines, api_key):
         return (loc["lat"], loc["lng"])
     return None
 
-def sort_events():
+def sort_events(lat, lng):
     google_maps_api_key = "AIzaSyBs86ACXN8GZfcrTzaTgenOFwaXJ-HmQIQ"
-    user_location = (39.981650629014474, -75.15328528534144)  # Example: North Philly
+    user_location = (lat, lng)  # Example: North Philly
 
     # 🔹 Load events
     with open("events_today.json", "r") as f:
