@@ -10,6 +10,42 @@ document.addEventListener('DOMContentLoaded', () => {
   const dayNum = (isoDate) => Number((isoDate || '').slice(-2));
   const isValidDate = (d) => d instanceof Date && !isNaN(d.getTime());
 
+  // --- auth helpers ---
+  let AUTH = false;
+
+  async function ensureAuth() {
+    try {
+      const r = await fetch('/api/user-status', { credentials: 'same-origin' });
+      if (r.ok) {
+        const j = await r.json();
+        AUTH = !!j.authenticated;
+      } else {
+        AUTH = false;
+      }
+    } catch {
+      AUTH = false;
+    }
+  }
+
+  // OLD
+// function loginRedirect() {
+//   location.href = '/login?next=' + encodeURIComponent(location.pathname + location.search);
+// }
+
+// NEW
+function loginRedirect() {
+  // Use the exact same href as the navbar Login button if it exists
+  const navLogin = document.querySelector('a[href="/login"]');
+  if (navLogin) {
+    window.location.href = navLogin.getAttribute('href');
+  } else {
+    // Fallback to the same path nav uses
+    window.location.href = '/login';
+  }
+}
+
+
+
   // normalize weird spacing e.g. "5 : 30 PM" -> "5:30 PM"
   function cleanupTimeString(t){
     return String(t || '').replace(/\s*:\s*/g, ':').replace(/\s+/g, ' ').trim();
@@ -136,15 +172,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load events from backend API (saved user events)
   async function loadEventsFromBackend(){
     try {
-      const response = await fetch('/api/user-events');
-      if (!response.ok) {
-        console.warn('Failed to load events from backend:', response.statusText);
-        return [];
-      }
+      const response = await fetch('/api/user-events', { credentials: 'same-origin' });
+      if (!response.ok) return [];
+      const ct = response.headers.get('content-type') || '';
+      if (!ct.includes('application/json')) return [];
       const data = await response.json();
       return Array.isArray(data) ? data.map(normalize) : [];
-    } catch (error) {
-      console.error('Error loading events from backend:', error);
+    } catch {
       return [];
     }
   }
@@ -185,6 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ===== Rendering =====
   function renderWeekdays(){
+    if (!els.weekdayRow) return;
     const names = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     els.weekdayRow.innerHTML = '';
     const frag = document.createDocumentFragment();
@@ -209,6 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderCalendar(){
+    if (!els.calendarGrid || !els.monthLabel) return;
     const { first, daysInMonth, label } = monthInfo();
     els.monthLabel.textContent = label;
     const grid = els.calendarGrid;
@@ -263,6 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderSaved(){
+    if (!els.savedList) return;
     const wrap = els.savedList;
     wrap.innerHTML = '';
     if (!saved.size){
@@ -274,8 +311,19 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    const tplRoot = els.savedItemTpl?.content?.firstElementChild;
+    if (!tplRoot) {
+      // fallback minimal render
+      for (const ev of saved.values()){
+        const li = document.createElement('div');
+        li.className = 'list-group-item';
+        li.textContent = `${ev.title} — ${bullets(ev.date ? fmtDateLabel(ev.date) : '', ev.time || '', ev.location || '')}`;
+        wrap.appendChild(li);
+      }
+      return;
+    }
+
     const frag = document.createDocumentFragment();
-    const tpl = els.savedItemTpl.content.firstElementChild;
 
     // prefer sorting by startISO; fallback to date/time text
     const arr = [...saved.values()];
@@ -286,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     for (const ev of arr){
-      const item = tpl.cloneNode(true);
+      const item = tplRoot.cloneNode(true);
       item.dataset.id = ev.id;
       item.querySelector('.title').textContent = ev.title ?? '';
       item.querySelector('.meta').textContent = bullets(
@@ -301,6 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderAllEvents(list){
+    if (!els.allEvents) return;
     const wrap = els.allEvents; wrap.innerHTML = '';
     if (!Array.isArray(list) || !list.length){
       const empty = document.createElement('div');
@@ -310,11 +359,13 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const frag = document.createDocumentFragment();
-    const tpl = els.allEventTpl.content.firstElementChild;
+    const tplRoot = els.allEventTpl?.content?.firstElementChild;
+    if (!tplRoot) return;
 
-    list.slice().sort((a,b)=>a.date.localeCompare(b.date)).forEach(ev=>{
-      const row = tpl.cloneNode(true);
+    const frag = document.createDocumentFragment();
+
+    list.slice().sort((a,b)=> (a.date||'').localeCompare(b.date||'')).forEach(ev=>{
+      const row = tplRoot.cloneNode(true);
       row.dataset.id = ev.id;
 
       const titleEl = row.querySelector('.title');
@@ -331,8 +382,13 @@ document.addEventListener('DOMContentLoaded', () => {
       );
 
       const btn = row.querySelector('.btn-save');
-      btn.textContent = saved.has(ev.id) ? 'Saved' : 'Add to saved';
-      btn.disabled = saved.has(ev.id);
+      if (!AUTH) {
+        btn.textContent = 'Log in to add';
+        btn.disabled = false;
+      } else {
+        btn.textContent = saved.has(ev.id) ? 'Saved' : 'Add to saved';
+        btn.disabled = saved.has(ev.id);
+      }
 
       frag.appendChild(row);
     });
@@ -342,7 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function selectEvent(id){
     selectedId = id;
     const ev = saved.get(id) || events.find(e=>e.id===id);
-    if (!ev) return;
+    if (!ev || !els.detailsContent) return;
     const d = els.detailsContent; d.innerHTML = '';
 
     const h = document.createElement('h3');
@@ -368,6 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
     removeBtn.className='btn btn-outline-danger';
     removeBtn.textContent='Remove from saved';
     removeBtn.addEventListener('click', async ()=>{
+      if (!AUTH) { loginRedirect(); return; }
       const event = saved.get(id);
       if (event) {
         try {
@@ -412,31 +469,36 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function showDetails(){
+    if (!els.calendarView || !els.detailsView || !els.toggleViewBtn) return;
     els.calendarView.hidden = true;
     els.detailsView.hidden  = false;
     els.toggleViewBtn.querySelector('span').textContent = 'Back to calendar';
   }
   function showCalendar(){
+    if (!els.calendarView || !els.detailsView || !els.toggleViewBtn) return;
     els.calendarView.hidden = false;
     els.detailsView.hidden  = true;
     els.toggleViewBtn.querySelector('span').textContent = 'Show details';
   }
 
   // ===== Wiring =====
-  els.toggleViewBtn.addEventListener('click',()=>{
+  els.toggleViewBtn?.addEventListener('click',()=>{
     const showing = !els.detailsView.hidden;
     showing ? showCalendar() : showDetails();
   });
-  els.backToCalendarBtn.addEventListener('click', showCalendar);
+  els.backToCalendarBtn?.addEventListener('click', showCalendar);
 
   // Refresh: reload saved events from backend, and re-render
-  els.refreshBtn.addEventListener('click', async ()=>{
+  els.refreshBtn?.addEventListener('click', async ()=>{
+    if (!AUTH) { renderAllEvents(events); renderCalendar(); return; }
     await loadSavedFromBackend();
-    renderAllEvents(events); // keep for future public feed
+    renderAllEvents(events);
   });
 
   // Saved list: delegate clicks (row select vs ✕ remove)
-  els.savedList.addEventListener('click', (e)=>{
+  els.savedList?.addEventListener('click', (e)=>{
+    if (!AUTH) { loginRedirect(); return; }
+
     const item = e.target.closest('[data-id]');
     if (!item) return;
     const id = item.dataset.id;
@@ -472,9 +534,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // All events: delegate “Add to saved” (works if you later populate `events`)
-  els.allEvents.addEventListener('click', (e)=>{
+  els.allEvents?.addEventListener('click', (e)=>{
     const btn = e.target.closest('.btn-save');
     if (!btn) return;
+    if (!AUTH) { loginRedirect(); return; }
+
     const row = btn.closest('[data-id]');
     if (!row) return;
     const id = row.dataset.id;
@@ -514,9 +578,30 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== Init =====
-  (async function init(){
-    renderWeekdays();
-    renderAllEvents(events);     // no external public data yet; shows empty message
-    await loadSavedFromBackend(); // pulls from backend and renders
-  })();
+  // ===== Init =====
+  (async function init () {
+  await ensureAuth();
+  renderWeekdays();
+
+  // Render All Events with the correct button labels based on AUTH
+  renderAllEvents(events);
+
+  if (!AUTH) {
+    // Friendly message + read-only calendar when logged out
+    if (els.savedList) {
+      els.savedList.innerHTML = `
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <span class="text-secondary">Log in to view and manage your saved events.</span>
+          <a class="btn btn-primary rounded-pill px-3" href="/login">Login</a>
+        </div>`;
+    }
+    renderCalendar();
+    return; // don’t call protected API
+  }
+
+  // Logged-in: pull saved events and render calendar
+  await loadSavedFromBackend();
+})();
 });
+
+
