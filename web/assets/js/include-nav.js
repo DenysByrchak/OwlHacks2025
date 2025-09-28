@@ -1,5 +1,5 @@
 export function loadNav(activePathname) {
-  return fetch('/partials/nav.html')
+  return fetch('../partials/nav.html')
     .then(r => r.text())
     .then(html => {
       // Mount the nav partial

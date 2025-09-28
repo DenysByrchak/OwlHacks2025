@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <!-- critical head -->
   <meta charset="utf-8" />
@@ -18,6 +19,7 @@
     loadHead();
   </script>
 </head>
+
 <body class="landing">
   <!-- Navbar -->
   <div id="nav-root"></div>
@@ -28,21 +30,19 @@
       <div id="map" aria-label="Interactive map of Philadelphia"></div>
 
       <!-- Top-center header (non-intrusive) -->
-<div class="hero-banner">
-  <div>
-    <h1 class="hero-title">Site Title</h1>
-    <p class="hero-kicker">Welcome To Philadelphia</p>
-    <p class="hero-sub">Plan Your Activities Around the City</p>
-  </div>
-</div>
+      <div class="hero-banner glass-pill">
+        <div>
+          <h2 class="fw-bold mb-0">Welcome to NextStopPhilly — Plan Your Adventures Around Philadelphia!</h2>
+        </div>
+      </div>
 
       <!-- Always-visible CTA inside the window -->
-      <button id="cta" class="btn btn-lg btn-glass cta-float rounded-pill">
-        <span class="me-2" aria-hidden="true">➜</span>
+      <button id="cta" class="btn btn-lg btn-glass glass-pill cta-float">
         <span>Find An Attraction</span>
+        <span class="me-2" aria-hidden="true">➜</span>
       </button>
-    </div>
-  </main>
+      </div>
+      </main>
 
   <!-- Leaflet before bootMap -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js" defer></script>
@@ -62,4 +62,5 @@
     });
   </script>
 </body>
+
 </html>
