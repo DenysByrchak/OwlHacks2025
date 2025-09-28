@@ -1,0 +1,122 @@
+from flask import Flask, send_from_directory, jsonify, request, render_template
+from flask_login import current_user, login_required
+import json
+from GenerateEvents import generate_events
+from SortEvents import sort_events, remove_time
+from backendUserData.loginRoutes import connect_login_routes
+import requests
+import os
+
+
+app = Flask(__name__, static_folder="web", template_folder="web")
+app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(69)
+
+connect_login_routes(app)
+
+# 🔹 Serve landing page at root
+@app.route("/")
+def serve_landing():
+    return render_template("pages/landing.html")
+
+# 🔹 Serve About page
+@app.route("/about")
+def serve_about():
+    return render_template("pages/about.html")
+
+# 🔹 Serve Account page
+@app.route("/account")
+def serve_account():
+    return render_template("pages/account.html")
+
+# 🔹 Serve Add-to-Schedule page
+@app.route("/add-to-schedule")
+def serve_add_to_schedule():
+    return render_template("pages/add-to-schedule.html")
+
+# 🔹 Serve Events page
+@app.route("/events")
+def serve_events_page():
+    return render_template("pages/events.html")
+
+# 🔹 Serve Schedule page
+@app.route("/schedule")
+def serve_schedule():
+    return render_template("pages/schedule.html")
+
+# 🔹 Serve Partials
+@app.route("/partials/<path:path>")
+def serve_partials(path):
+    return send_from_directory("web/partials", path)
+
+# 🔹 Serve Static Assets
+@app.route("/assets/<path:path>")
+def serve_assets(path):
+    return send_from_directory("web/assets", path)
+
+@app.route('/api/receive-location', methods=['POST'])
+def receive_location():
+    data = request.get_json()
+    lat = data.get('latitude')
+    lng = data.get('longitude')
+    print(f"Received user location: {lat}, {lng}")
+    parse_events(lat, lng)
+    
+    with open("events_sorted_for_today.json", "r") as f:
+        events = json.load(f)
+    
+    return jsonify({
+        'status': 'ok',
+        'received': {'lat': lat, 'lng': lng},
+        'events': events
+    })
+    
+
+# 🔹 Serve Event Data API
+@app.route("/api/events")
+def serve_events():
+    try:
+        with open("events_sorted_for_today.json", "r") as f:
+            events = json.load(f)
+        return jsonify(events)
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+# 🔹 User Authentication Status API
+@app.route("/api/user-status")
+def user_status():
+    return jsonify({
+        "authenticated": current_user.is_authenticated,
+        "user_id": current_user.id if current_user.is_authenticated else None
+    })
+
+# 🔹 Schedule Event API
+@app.route("/api/schedule-event", methods=['POST'])
+@login_required
+def schedule_event():
+    data = request.get_json()
+    
+    title = data.get('title')
+    date = data.get('date')
+    start_time = data.get('start_time')
+    end_time = data.get('end_time')
+    price = data.get('price', '')
+    url = data.get('url', '')
+    
+    if not all([title, date, start_time, end_time]):
+        return jsonify({"error": "Missing required fields"}), 400
+    
+    try:
+        current_user.schedule_event(title, date, start_time, end_time, price, url)
+        return jsonify({"status": "success", "message": "Event scheduled successfully"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+def parse_events(lat, lng):
+    print("🚀 Running Philly Tour pipeline sorting")
+    generate_events(lat, lng)
+    sort_events(lat, lng)
+    # remove_time("2:00 PM", "5:00 PM")
+    
+# 🔹 Run pipeline before server starts
+if __name__ == "__main__":
+    app.run(debug=True, ssl_context="adhoc")
