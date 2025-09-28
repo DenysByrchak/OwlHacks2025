@@ -8,22 +8,30 @@ document.addEventListener('DOMContentLoaded', () => {
   const fmtTime = (d) => d.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
   const fmtDateLabel = (isoDate) => new Date(isoDate + 'T00:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'});
   const dayNum = (isoDate) => Number(isoDate.slice(-2));
+  const isValidDate = (d) => d instanceof Date && !isNaN(d.getTime());
 
   // Convert stored entry -> view model the page expects
   function normalize(entry){
     // entry: {id,title,location,start,end,notes}
     const start = new Date(entry.start);
     const end   = entry.end ? new Date(entry.end) : null;
-    const date  = toDateOnly(entry.start);
-    const time  = end ? `${fmtTime(start)}–${fmtTime(end)}` : fmtTime(start);
+
+    const validStart = isValidDate(start);
+    const validEnd   = end && isValidDate(end);
+
+    const date  = validStart ? toDateOnly(entry.start) : '';
+    const time  = validStart
+      ? (validEnd ? `${fmtTime(start)}–${fmtTime(end)}` : fmtTime(start))
+      : '';
+
     return {
-      id: String(entry.id ?? crypto.randomUUID?.() ?? ('id-'+Date.now())),
+      id: String(entry.id ?? (crypto.randomUUID ? crypto.randomUUID() : ('id-'+Date.now()))),
       title: entry.title ?? 'Untitled Event',
       location: entry.location ?? CITY,
       date,
       time,
-      startISO: entry.start,
-      endISO: entry.end || '',
+      startISO: validStart ? entry.start : '',
+      endISO: validEnd ? entry.end : '',
       notes: entry.notes || ''
     };
   }
@@ -36,14 +44,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function writeSavedToStorage(list){
     const backToStored = list.map(e => ({
-      id: e.id, title: e.title, location: e.location,
+      id: e.id,
+      title: e.title,
+      location: e.location,
       start: e.startISO || (e.date ? (e.date + 'T00:00:00') : ''),
-      end:   e.endISO || '', notes: e.notes || ''
+      end:   e.endISO || '',
+      notes: e.notes || ''
     }));
     localStorage.setItem(STORAGE_KEY, JSON.stringify(backToStored));
   }
 
-  // Load events from backend API
+  // Load events from backend API (saved user events)
   async function loadEventsFromBackend(){
     try {
       const response = await fetch('/api/user-events');
@@ -60,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== State =====
-  let events = [];                 // (optional) all events from API
+  let events = [];                 // (optional) all events (public/explore) if you add a source
   const saved = new Map();         // id -> normalized event
   let selectedId = null;
 
@@ -78,8 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
     detailsContent: document.getElementById('detailsContent'),
     savedItemTpl: document.getElementById('savedItemTpl'),
     allEventTpl: document.getElementById('allEventTpl'),
-    refreshBtn: document.getElementById('refreshBtn'),
-    clearSavedBtn: document.getElementById('clearSavedBtn'),
+    refreshBtn: document.getElementById('refreshBtn')
   };
 
   // ===== Month helpers =====
@@ -89,8 +99,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const m = now.getMonth();
     const first = new Date(y, m, 1);
     const daysInMonth = new Date(y, m+1, 0).getDate();
+    const ymKey = `${y}-${String(m+1).padStart(2,'0')}`; // e.g., "2025-09"
     const label = first.toLocaleDateString(undefined,{month:'long',year:'numeric'});
-    return { first, daysInMonth, label };
+    return { first, daysInMonth, label, ymKey };
   }
 
   // ===== Rendering =====
@@ -108,7 +119,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function indexSavedByDay(){
     const idx = new Map();
+    const { ymKey } = monthInfo();
     for (const ev of saved.values()){
+      // only index events for the current month
+      if (!ev.date || ev.date.slice(0,7) !== ymKey) continue;
       const d = dayNum(ev.date);
       if (!idx.has(d)) idx.set(d, []);
       idx.get(d).push(ev);
@@ -176,26 +190,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!saved.size){
       const empty = document.createElement('div');
       empty.className = 'list-group-item text-secondary';
-      empty.textContent = 'No saved events yet. Add some from the Events page.';
+      empty.textContent = 'No saved events yet. Use "Add to saved" below.';
       wrap.appendChild(empty);
-      els.toggleViewBtn.disabled = true;
+      if (els.toggleViewBtn) els.toggleViewBtn.disabled = true;
       return;
     }
 
     const frag = document.createDocumentFragment();
     const tpl = els.savedItemTpl.content.firstElementChild;
     [...saved.values()]
-      .sort((a,b)=>a.date.localeCompare(b.date) || a.time.localeCompare(b.time))
+      .sort((a,b)=> a.date.localeCompare(b.date) || (a.time||'').localeCompare(b.time||''))
       .forEach(ev=>{
         const item = tpl.cloneNode(true);
         item.dataset.id = ev.id;
         item.querySelector('.title').textContent = ev.title ?? '';
         item.querySelector('.meta').textContent =
-          `${fmtDateLabel(ev.date)} • ${ev.time || ''} • ${ev.location || ''}`;
+          `${ev.date ? fmtDateLabel(ev.date) : ''} • ${ev.time || ''} • ${ev.location || ''}`;
         frag.appendChild(item);
       });
     wrap.appendChild(frag);
-    els.toggleViewBtn.disabled = !selectedId;
+    if (els.toggleViewBtn) els.toggleViewBtn.disabled = (saved.size === 0 || selectedId == null);
   }
 
   function renderAllEvents(list){
@@ -223,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
       titleEl.append(' ', cityBadge);
 
       row.querySelector('.meta').textContent =
-        `${fmtDateLabel(ev.date)} • ${(ev.time ?? '')} • ${(ev.location ?? '')}`;
+        `${ev.date ? fmtDateLabel(ev.date) : ''} • ${(ev.time ?? '')} • ${(ev.location ?? '')}`;
 
       const btn = row.querySelector('.btn-save');
       btn.textContent = saved.has(ev.id) ? 'Saved' : 'Add to saved';
@@ -247,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const meta = document.createElement('div');
     meta.className='text-secondary mb-2';
     meta.textContent =
-      `${fmtDateLabel(ev.date)} • ${ev.time || ''} • ${ev.location || ''}`;
+      `${ev.date ? fmtDateLabel(ev.date) : ''} • ${ev.time || ''} • ${ev.location || ''}`;
 
     const notes = document.createElement('p');
     notes.className='mb-0';
@@ -262,26 +276,18 @@ document.addEventListener('DOMContentLoaded', () => {
     removeBtn.addEventListener('click', async ()=>{
       const event = saved.get(id);
       if (event) {
-        // Delete from backend
+        // Delete from backend (by title; switch to id when available)
         try {
           const response = await fetch('/api/delete-event', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              title: event.title
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: event.title })
           });
-          
-          if (!response.ok) {
-            console.warn('Failed to delete event from backend:', response.statusText);
-          }
+          if (!response.ok) console.warn('Failed to delete event from backend:', response.statusText);
         } catch (error) {
           console.error('Error deleting event from backend:', error);
         }
       }
-      
       saved.delete(id);
       writeSavedToStorage([...saved.values()]);
       selectedId=null;
@@ -292,13 +298,13 @@ document.addEventListener('DOMContentLoaded', () => {
     jumpBtn.className='btn btn-outline-secondary';
     jumpBtn.textContent='Jump to day';
     jumpBtn.addEventListener('click',()=>{
-      highlightDay(ev.date);
+      if (ev.date) highlightDay(ev.date);
       showCalendar();
     });
 
     actions.append(removeBtn, jumpBtn);
     d.append(h, meta, notes, actions);
-    els.toggleViewBtn.disabled = false;
+    if (els.toggleViewBtn) els.toggleViewBtn.disabled = false;
   }
 
   function highlightDay(isoDate){
@@ -330,59 +336,62 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   els.backToCalendarBtn.addEventListener('click', showCalendar);
 
-  els.clearSavedBtn.addEventListener('click',()=>{
-    saved.clear();
-    localStorage.setItem(STORAGE_KEY, '[]');
-    selectedId=null;
-    renderSaved(); renderCalendar();
-  });
-
+  // Refresh: reload saved events from backend, and re-render
   els.refreshBtn.addEventListener('click', async ()=>{
-    // If you later add a real /api/philly-events, load it here.
-    renderAllEvents(events);
-    // Also re-pull saved from storage in case it changed.
-    loadSavedFromStorage();
+    await loadSavedFromBackend();
+    renderAllEvents(events); // keep this, in case you later set `events` from a public feed
   });
 
-  // Saved list: delegate clicks (select vs remove)
+  // Saved list: delegate clicks (row select vs ✕ remove)
   els.savedList.addEventListener('click', (e)=>{
     const item = e.target.closest('[data-id]');
     if (!item) return;
     const id = item.dataset.id;
+
+    // Remove (small ✕ badge)
     if (e.target.closest('.btn-remove')){
       const event = saved.get(id);
       if (event) {
-        // Delete from backend
         (async () => {
           try {
             const response = await fetch('/api/delete-event', {
               method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                title: event.title
-              })
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ title: event.title })
             });
-            
-            if (!response.ok) {
-              console.warn('Failed to delete event from backend:', response.statusText);
-            }
+            if (!response.ok) console.warn('Failed to delete event from backend:', response.statusText);
           } catch (error) {
             console.error('Error deleting event from backend:', error);
           }
         })();
       }
-      
       saved.delete(id);
       writeSavedToStorage([...saved.values()]);
       if (selectedId===id) selectedId=null;
       renderSaved(); renderCalendar();
       return;
     }
+
+    // Select row
     selectEvent(id);
     const ev = saved.get(id);
-    if (ev) highlightDay(ev.date);
+    if (ev && ev.date) highlightDay(ev.date);
+  });
+
+  // All events: delegate “Add to saved” (works if you later populate `events`)
+  els.allEvents.addEventListener('click', (e)=>{
+    const btn = e.target.closest('.btn-save');
+    if (!btn) return;
+    const row = btn.closest('[data-id]');
+    if (!row) return;
+    const id = row.dataset.id;
+    const ev = events.find(x=>x.id===id);
+    if (!ev) return;
+    saved.set(id, ev);
+    writeSavedToStorage([...saved.values()]);
+    renderSaved(); renderCalendar();
+    btn.textContent = 'Saved';
+    btn.disabled = true;
   });
 
   // Keep page in sync if another tab updates localStorage
@@ -406,13 +415,15 @@ document.addEventListener('DOMContentLoaded', () => {
     for (const ev of backendEvents){
       saved.set(ev.id, ev);
     }
+    // sync local cache so other tabs see updates
+    writeSavedToStorage([...saved.values()]);
     renderSaved(); renderCalendar();
   }
 
   // ===== Init =====
   (async function init(){
     renderWeekdays();
-    renderAllEvents(events);     // no external data yet; shows empty message
-    await loadSavedFromBackend(); // <-- pulls from backend and renders
+    renderAllEvents(events);     // no external public data yet; shows empty message
+    await loadSavedFromBackend(); // pulls from backend and renders
   })();
 });
