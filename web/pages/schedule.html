@@ -8,30 +8,13 @@
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-  <!-- INLINE CSS FOR RELIABILITY (move to /css/schedule.css after it works) -->
-  <style>
-    :root{
-      --cal-cell-min-h:96px;
-      --shadow-sm:0 2px 8px rgba(17,24,39,.08);
-      --shadow-hover:0 6px 16px rgba(17,24,39,.10);
-    }
-    body{overflow-x:hidden;}
-    #savedEvents{max-height:calc(100vh - 140px);overflow-y:auto;}
-    .weekday-row{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.5rem;margin-bottom:.5rem;color:var(--bs-secondary-color);text-transform:uppercase;font-size:.8rem;letter-spacing:.03em}
-    .weekday-row>div{text-align:center;padding:.25rem 0}
-    .calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:.5rem}
-    .day{position:relative;min-height:var(--cal-cell-min-h);padding:.35rem .45rem;border:1px solid var(--bs-border-color);border-radius:.5rem;background-color:var(--bs-body-bg);box-shadow:var(--shadow-sm);transition:background-color .12s ease,border-color .12s ease,box-shadow .12s ease}
-    .day:hover{background-color:var(--bs-tertiary-bg);border-color:rgba(13,110,253,.25);box-shadow:var(--shadow-hover)}
-    .day-number{position:absolute;top:.35rem;right:.45rem;font-size:.85rem;color:var(--bs-secondary-color)}
-    .day.has-event{border-color:var(--bs-primary)}
-    .day.selected{outline:3px solid var(--bs-primary);outline-offset:0}
-    .no-wrap{white-space:nowrap}
-    .location-pill{font-size:.75rem}
-    .conflict-pill{font-size:.7rem}
-    .list-group-item-action:hover{background-color:var(--bs-tertiary-bg)}
-  </style>
+  <!-- Project CSS -->
+  <link rel="stylesheet" href="../assets/css/schedule.css" />
 </head>
 <body class="bg-light">
+  <!-- Navbar mount (shared across pages) -->
+  <div id="nav-root"></div>
+
   <!-- Header -->
   <header class="w-100 bg-primary text-white text-center py-3 mb-3">
     <h1 class="h4 mb-0">Your Schedule & Events</h1>
@@ -82,13 +65,12 @@
           </div>
         </div>
 
-        <!-- All events -->
+        <!-- All events (optional data source; shows empty if none) -->
         <div class="card mt-3 shadow-sm">
           <div class="card-header d-flex justify-content-between align-items-center">
             <span>All events in Philadelphia</span>
             <div class="d-flex gap-2">
-              <!-- present but intentionally not wired -->
-              <button class="btn btn-sm btn-outline-secondary" id="useLocationBtn">Use my location</button>
+              <button class="btn btn-sm btn-outline-secondary" id="useLocationBtn" disabled>Use my location</button>
               <button class="btn btn-sm btn-outline-primary" id="refreshBtn">Refresh</button>
             </div>
           </div>
@@ -122,325 +104,16 @@
     </div>
   </template>
 
-  <!-- App JS -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // ===== Config =====
-      const CITY = "Philadelphia";
-
-      // ===== Minimal validation =====
-      const isISODate = (s) => {
-        if (typeof s !== 'string' || s.length !== 10) return false;
-        const [y,m,d] = s.split('-').map(Number);
-        if (!y || !m || !d) return false;
-        const dt = new Date(\`\${s}T00:00:00\`);
-        return !isNaN(dt) && dt.getFullYear()===y && (dt.getMonth()+1)===m && dt.getDate()===d;
-      };
-      const isValidEvent = (e) =>
-        e && typeof e.id==='string' && typeof e.title==='string' &&
-        isISODate(e.date) && typeof e.time==='string' && typeof e.location==='string';
-
-      // ===== Data (skeleton) =====
-      async function fetchPhillyEvents(){
-        try {
-          // const res = await fetch('/api/philly-events');
-          // const data = await res.json();
-          const data = []; // skeleton: return empty by default
-          return Array.isArray(data) ? data.filter(isValidEvent) : [];
-        } catch { return []; }
-      }
-
-      // ===== State & element cache =====
-      let events = [];                 // all fetched events
-      const saved = new Map();         // id -> event
-      let selectedId = null;
-
-      const els = {
-        monthLabel: document.getElementById('monthLabel'),
-        weekdayRow: document.getElementById('weekdayRow'),
-        calendarGrid: document.getElementById('calendarGrid'),
-        savedList: document.getElementById('savedEvents'),
-        allEvents: document.getElementById('allEvents'),
-        toggleViewBtn: document.getElementById('toggleViewBtn'),
-        backToCalendarBtn: document.getElementById('backToCalendarBtn'),
-        detailsView: document.getElementById('detailsView'),
-        calendarView: document.getElementById('calendarView'),
-        detailsContent: document.getElementById('detailsContent'),
-        savedItemTpl: document.getElementById('savedItemTpl'),
-        allEventTpl: document.getElementById('allEventTpl'),
-        refreshBtn: document.getElementById('refreshBtn'),
-        clearSavedBtn: document.getElementById('clearSavedBtn'),
-      };
-
-      // ===== Date helpers =====
-      const fmtDateLabel = (iso) => new Date(\`\${iso}T00:00:00\`)
-        .toLocaleDateString(undefined,{month:'short',day:'numeric'});
-      const dayNum = (iso) => Number(iso.slice(-2));
-      function monthInfo(){
-        const now = new Date();
-        const y = now.getFullYear();
-        const m = now.getMonth();
-        const first = new Date(y, m, 1);
-        const daysInMonth = new Date(y, m+1, 0).getDate();
-        const label = first.toLocaleDateString(undefined,{month:'long',year:'numeric'});
-        return { first, daysInMonth, label };
-      }
-
-      // Build an index of saved events for quick per-day lookup
-      function indexSavedByDay(){
-        const idx = new Map();
-        for (const ev of saved.values()){
-          const d = dayNum(ev.date);
-          if (!idx.has(d)) idx.set(d, []);
-          idx.get(d).push(ev);
-        }
-        return idx;
-      }
-
-      // ===== Rendering =====
-      function renderWeekdays(){
-        const names = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-        els.weekdayRow.innerHTML = '';
-        const frag = document.createDocumentFragment();
-        for (const n of names){
-          const div = document.createElement('div');
-          div.textContent = n;
-          frag.appendChild(div);
-        }
-        els.weekdayRow.appendChild(frag);
-      }
-
-      function renderCalendar(){
-        const { first, daysInMonth, label } = monthInfo();
-        els.monthLabel.textContent = label;
-        const grid = els.calendarGrid;
-        grid.innerHTML = '';
-
-        // weekday offset
-        const lead = first.getDay();
-        for (let i=0;i<lead;i++){
-          const blank = document.createElement('div');
-          blank.className='day bg-white';
-          blank.setAttribute('aria-hidden','true');
-          grid.appendChild(blank);
-        }
-
-        const byDay = indexSavedByDay();
-
-        for (let d=1; d<=daysInMonth; d++){
-          const cell = document.createElement('button');
-          cell.type = 'button';
-          cell.className = 'day bg-white text-start';
-          cell.dataset.day = String(d);
-
-          const num = document.createElement('span');
-          num.className = 'day-number';
-          num.textContent = d;
-          cell.appendChild(num);
-
-          const list = document.createElement('div');
-          list.className = 'small';
-          cell.appendChild(list);
-
-          const todays = byDay.get(d) || [];
-          if (todays.length){
-            cell.classList.add('has-event');
-            for (const ev of todays){
-              const pill = document.createElement('div');
-              pill.className = 'badge text-bg-primary text-truncate w-100 mb-1';
-              pill.textContent = ev.title ?? '';
-              pill.title = ev.title ?? '';
-              list.appendChild(pill);
-            }
-          }
-
-          cell.addEventListener('click', () => {
-            document.querySelectorAll('.day.selected').forEach(el=>el.classList.remove('selected'));
-            cell.classList.add('selected');
-            if (todays[0]) { selectEvent(todays[0].id); showDetails(); }
-          });
-
-          grid.appendChild(cell);
-        }
-      }
-
-      function renderSaved(){
-        const wrap = els.savedList;
-        wrap.innerHTML = '';
-        if (!saved.size){
-          const empty = document.createElement('div');
-          empty.className = 'list-group-item text-secondary';
-          empty.textContent = 'No saved events yet. Use "Add to saved" below.';
-          wrap.appendChild(empty);
-          els.toggleViewBtn.disabled = true;
-          return;
-        }
-
-        const frag = document.createDocumentFragment();
-        const tpl = els.savedItemTpl.content.firstElementChild;
-        [...saved.values()].sort((a,b)=>a.date.localeCompare(b.date)).forEach(ev=>{
-          const item = tpl.cloneNode(true);
-          item.dataset.id = ev.id;
-          item.querySelector('.title').textContent = ev.title ?? '';
-          item.querySelector('.meta').textContent =
-            `${fmtDateLabel(ev.date)} • ${(ev.time ?? '')} • ${(ev.location ?? '')}`;
-          frag.appendChild(item);
-        });
-        wrap.appendChild(frag);
-        els.toggleViewBtn.disabled = !selectedId;
-      }
-
-      function renderAllEvents(list){
-        const wrap = els.allEvents; wrap.innerHTML = '';
-        const frag = document.createDocumentFragment();
-        const tpl = els.allEventTpl.content.firstElementChild;
-
-        list.slice().sort((a,b)=>a.date.localeCompare(b.date)).forEach(ev=>{
-          const row = tpl.cloneNode(true);
-          row.dataset.id = ev.id;
-
-          // SAFE title + city badge (no innerHTML)
-          const titleEl = row.querySelector('.title');
-          titleEl.textContent = ev.title ?? '';
-          const cityBadge = document.createElement('span');
-          cityBadge.className = 'badge text-bg-light location-pill ms-2';
-          cityBadge.textContent = CITY;
-          titleEl.append(' ', cityBadge);
-
-          row.querySelector('.meta').textContent =
-            `${fmtDateLabel(ev.date)} • ${(ev.time ?? '')} • ${(ev.location ?? '')}`;
-
-          const btn = row.querySelector('.btn-save');
-          btn.textContent = saved.has(ev.id) ? 'Saved' : 'Add to saved';
-          btn.disabled = saved.has(ev.id);
-
-          frag.appendChild(row);
-        });
-        wrap.appendChild(frag);
-      }
-
-      function selectEvent(id){
-        selectedId = id;
-        const ev = saved.get(id) || events.find(e=>e.id===id);
-        if (!ev) return;
-        const d = els.detailsContent; d.innerHTML = '';
-
-        const h = document.createElement('h3');
-        h.className='h5';
-        h.textContent = ev.title ?? '';
-
-        const meta = document.createElement('div');
-        meta.className='text-secondary mb-2';
-        meta.textContent = `${fmtDateLabel(ev.date)} • ${(ev.time ?? '')} • ${(ev.location ?? '')}`;
-
-        const p = document.createElement('p');
-        p.className='mb-0';
-        p.textContent = ev.desc ?? '';
-
-        const actions = document.createElement('div');
-        actions.className='mt-3 d-flex gap-2';
-
-        const ensureBtn = document.createElement('button');
-        ensureBtn.className='btn btn-outline-primary';
-        ensureBtn.textContent = saved.has(id) ? 'Saved' : 'Add to saved';
-        ensureBtn.addEventListener('click',()=>{
-          saved.set(id, ev);
-          renderSaved(); renderCalendar(); selectEvent(id);
-        });
-
-        const jumpBtn = document.createElement('button');
-        jumpBtn.className='btn btn-outline-secondary';
-        jumpBtn.textContent='Jump to day';
-        jumpBtn.addEventListener('click',()=>{
-          highlightDay(ev.date);
-          showCalendar();
-        });
-
-        actions.append(ensureBtn, jumpBtn);
-        d.append(h, meta, p, actions);
-        els.toggleViewBtn.disabled = false;
-      }
-
-      function highlightDay(iso){
-        const d = Number(iso.slice(-2));
-        document.querySelectorAll('.day.selected').forEach(el=>el.classList.remove('selected'));
-        const cell = document.querySelector(\`.day[data-day="\${d}"]\`);
-        if (cell){
-          cell.classList.add('selected');
-          cell.scrollIntoView({behavior:'smooth', block:'nearest', inline:'nearest'});
-        }
-        showDetails();
-      }
-
-      function showDetails(){
-        els.calendarView.hidden = true;
-        els.detailsView.hidden  = false;
-        els.toggleViewBtn.querySelector('span').textContent = 'Back to calendar';
-      }
-      function showCalendar(){
-        els.calendarView.hidden = false;
-        els.detailsView.hidden  = true;
-        els.toggleViewBtn.querySelector('span').textContent = 'Show details';
-      }
-
-      // ===== Wiring =====
-      els.toggleViewBtn.addEventListener('click',()=>{
-        const showing = !els.detailsView.hidden;
-        showing ? showCalendar() : showDetails();
-      });
-      els.backToCalendarBtn.addEventListener('click', showCalendar);
-      els.clearSavedBtn.addEventListener('click',()=>{
-        saved.clear(); selectedId=null; renderSaved(); renderCalendar();
-      });
-      els.refreshBtn.addEventListener('click', async ()=>{
-        events = await fetchPhillyEvents();
-        renderAllEvents(events);
-      });
-
-      // Saved list: delegate clicks (select vs remove)
-      els.savedList.addEventListener('click', (e)=>{
-        const item = e.target.closest('[data-id]');
-        if (!item) return;
-        const id = item.dataset.id;
-        if (e.target.closest('.btn-remove')){
-          saved.delete(id);
-          if (selectedId===id) selectedId=null;
-          renderSaved(); renderCalendar();
-          return;
-        }
-        selectEvent(id);
-        const ev = saved.get(id);
-        if (ev) highlightDay(ev.date);
-      });
-
-      // All events: delegate “Add to saved”
-      els.allEvents.addEventListener('click', (e)=>{
-        const btn = e.target.closest('.btn-save');
-        if (!btn) return;
-        const row = btn.closest('[data-id]');
-        if (!row) return;
-        const id = row.dataset.id;
-        const ev = events.find(x=>x.id===id);
-        if (!ev) return;
-        if (!saved.has(id)) saved.set(id, ev);
-        renderSaved(); renderCalendar();
-        btn.textContent = 'Saved';
-        btn.disabled = true;
-      });
-
-      // ===== Init =====
-      (async function init(){
-        renderWeekdays();
-        events = await fetchPhillyEvents();
-        for (const ev of events){ if (ev.favorited) saved.set(ev.id, ev); }
-        renderSaved();
-        renderCalendar();
-        renderAllEvents(events);
-      })();
-    });
+  <!-- Nav loader (module) -->
+  <script type="module">
+    import { loadNav } from '../assets/js/include-nav.js';
+    loadNav('schedule');
   </script>
 
-  <!-- Bootstrap JS (optional) -->
+  <!-- Page JS -->
+  <script src="../assets/js/schedule.js"></script>
+
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

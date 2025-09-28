@@ -1,0 +1,12 @@
+/* Popout Schedule (modal used on events.html)
+   Keep the modal and toast above Leaflet controls.*/
+
+/* Scope to this modal ID so we don't affect other modals */
+#popoutScheduleModal { z-index: 1080; }
+
+/* In case some Leaflet themes crank control z-index */
+.leaflet-container { z-index: 1; }
+
+/* If your toast is not inline-styled, ensure it wins too */
+.toast,
+.toast-container { z-index: 1090; }
