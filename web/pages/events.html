@@ -53,21 +53,21 @@
       </header>
 
       <ul id="eventsList" class="events-items">
-        <!-- Populated by JS; fallback placeholders render if fetch fails -->
+        <!-- Fallback placeholders (auto-wired by JS; no per-item attrs needed) -->
         <li class="event-card">
           <h3 class="event-title">Sample Event One</h3>
           <p class="event-meta">Center City • Today 5:30 PM</p>
-          <button class="event-action">Add to Schedule</button>
+          <button class="event-action btn btn-outline-dark btn-sm">Add to Schedule</button>
         </li>
         <li class="event-card">
           <h3 class="event-title">Sample Event Two</h3>
           <p class="event-meta">University City • Tomorrow 2:00 PM</p>
-          <button class="event-action">Add to Schedule</button>
+          <button class="event-action btn btn-outline-dark btn-sm">Add to Schedule</button>
         </li>
         <li class="event-card">
           <h3 class="event-title">Sample Event Three</h3>
           <p class="event-meta">Old City • Sat 11:00 AM</p>
-          <button class="event-action">Add to Schedule</button>
+          <button class="event-action btn btn-outline-dark btn-sm">Add to Schedule</button>
         </li>
       </ul>
     </aside>
@@ -78,9 +78,14 @@
     </section>
   </main>
 
-  <!-- Leaflet JS must be available before bootMap() runs -->
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js" defer></script>
+  <!-- Inject the modal/Toast partial (kept in its own file) -->
+  <div data-include="/pages/add-to-schedule.html"></div>
 
+  <!-- JS: Leaflet first, then Bootstrap bundle for modal/toast -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Project JS -->
   <script type="module">
     import { loadNav } from '../assets/js/include-nav.js';
     import { bootMap } from '../assets/js/map-setup.js';
@@ -100,28 +105,66 @@
       window.addEventListener('resize', () => map && map.invalidateSize());
     });
 
+    /**
+     * Helper: turn event object into DOM <li> and auto-wire data-* for the modal.
+     * You don't have to hand-edit each item.
+     */
+    function makeEventLI(ev) {
+      const li = document.createElement('li');
+      li.className = 'event-card';
+
+      // Prefer ISO fields if your API has them; fall back to strings
+      const title = ev.title ?? 'Untitled Event';
+      const location = ev.neighborhood ?? ev.location ?? 'Philadelphia';
+      const startIso = ev.startIso ?? ev.startISO ?? ev.startTimeIso ?? '';
+
+      li.innerHTML = `
+        <h3 class="event-title">${title}</h3>
+        <p class="event-meta">${location} • ${ev.time ?? ev.startText ?? ''}</p>
+        <button class="event-action btn btn-outline-primary btn-sm">Add to Schedule</button>
+      `;
+
+      // Auto-add the data attributes the modal script expects (no manual markup)
+      const btn = li.querySelector('.event-action');
+      btn.dataset.addToSchedule = '';           // presence is enough
+      btn.dataset.id = ev.id ?? crypto.randomUUID?.() ?? `ev-${Date.now()}`;
+      btn.dataset.title = title;
+      btn.dataset.location = location;
+      if (startIso) btn.dataset.startIso = startIso;
+
+      return li;
+    }
+
     async function loadEvents() {
       const list = document.getElementById('eventsList');
       if (!list) return;
 
+      // First, auto-wire the fallback samples already in the HTML
+      list.querySelectorAll('.event-card').forEach((card, idx) => {
+        const title = card.querySelector('.event-title')?.textContent?.trim() || `Sample Event ${idx+1}`;
+        const meta = card.querySelector('.event-meta')?.textContent || '';
+        const location = meta.split('•')[0].trim() || 'Philadelphia';
+        const btn = card.querySelector('.event-action');
+        if (!btn) return;
+        btn.classList.add('btn','btn-outline-dark','btn-sm');
+        btn.dataset.addToSchedule = '';
+        btn.dataset.id = `sample-${idx+1}`;
+        btn.dataset.title = title;
+        btn.dataset.location = location;
+        // Optional: guess a start time so the modal has a sensible default
+        const guess = new Date(); guess.setHours(17,30,0,0);
+        btn.dataset.startIso = guess.toISOString();
+      });
+
+      // Then, try to replace with real events from API
       try {
         const res = await fetch('/api/events');
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const events = await res.json();
-
         if (!Array.isArray(events) || events.length === 0) return;
 
         list.innerHTML = '';
-        events.forEach(ev => {
-          const li = document.createElement('li');
-          li.className = 'event-card';
-          li.innerHTML = `
-            <h3 class="event-title">${ev.title ?? 'Untitled Event'}</h3>
-            <p class="event-meta">${ev.neighborhood ?? 'Philadelphia'} • ${ev.time ?? ''}</p>
-            <button class="event-action btn btn-outline-primary btn-sm" data-id="${ev.id ?? ''}">View</button>
-          `;
-          list.appendChild(li);
-        });
+        events.forEach(ev => list.appendChild(makeEventLI(ev)));
       } catch (err) {
         console.error('Failed to load events:', err);
         const li = document.createElement('li');
@@ -135,5 +178,11 @@
 
   <!-- Geolocation helper (uses #findAttractionsBtn and #locationStatus) -->
   <script src="../assets/js/find-attractions.js" defer></script>
+
+  <!-- Partials loader (injects /pages/add-to-schedule.html) -->
+  <script src="../assets/js/partials.js"></script>
+
+  <!-- Modal wiring + localStorage schedule logic -->
+  <script src="../assets/js/schedule.js"></script>
 </body>
 </html>
