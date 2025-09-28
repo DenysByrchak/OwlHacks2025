@@ -16,36 +16,38 @@ connect_login_routes(app)
 # 🔹 Serve landing page at root
 @app.route("/")
 def serve_landing():
-    return render_template("pages/landing.html")
+    return render_template("pages/landing.html", current_user=current_user)
 
 # 🔹 Serve About page
 @app.route("/about")
 def serve_about():
-    return render_template("pages/about.html")
+    return render_template("pages/about.html", current_user=current_user)
 
 # 🔹 Serve Account page
 @app.route("/account")
 def serve_account():
-    return render_template("pages/account.html")
+    return render_template("pages/account.html", current_user=current_user)
 
 # 🔹 Serve Add-to-Schedule page
 @app.route("/add-to-schedule")
 def serve_add_to_schedule():
-    return render_template("pages/add-to-schedule.html")
+    return render_template("pages/add-to-schedule.html", current_user=current_user)
 
 # 🔹 Serve Events page
 @app.route("/events")
 def serve_events_page():
-    return render_template("pages/events.html")
+    return render_template("pages/events.html", current_user=current_user)
 
 # 🔹 Serve Schedule page
 @app.route("/schedule")
 def serve_schedule():
-    return render_template("pages/schedule.html")
+    return render_template("pages/schedule.html", current_user=current_user)
 
 # 🔹 Serve Partials
 @app.route("/partials/<path:path>")
 def serve_partials(path):
+    if path == "nav.html":
+        return render_template("partials/nav.html", current_user=current_user)
     return send_from_directory("web/partials", path)
 
 # 🔹 Serve Static Assets
@@ -108,6 +110,35 @@ def schedule_event():
     try:
         current_user.schedule_event(title, date, start_time, end_time, price, url)
         return jsonify({"status": "success", "message": "Event scheduled successfully"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/user-events")
+@login_required
+def get_user_events():
+    try:
+        events = current_user.get_events()
+        print("User Events:")
+        print(events)
+        print(jsonify(events))
+        return jsonify(events)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/delete-event", methods=['POST'])
+@login_required
+def delete_user_event():
+    data = request.get_json()
+    title = data.get('title')
+    
+    if not title:
+        return jsonify({"error": "Missing title"}), 400
+    
+    try:
+        result = current_user.delete_event(title)
+        return jsonify({"status": "success", "message": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

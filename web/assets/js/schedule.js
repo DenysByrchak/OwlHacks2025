@@ -43,6 +43,22 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(backToStored));
   }
 
+  // Load events from backend API
+  async function loadEventsFromBackend(){
+    try {
+      const response = await fetch('/api/user-events');
+      if (!response.ok) {
+        console.warn('Failed to load events from backend:', response.statusText);
+        return [];
+      }
+      const events = await response.json();
+      return Array.isArray(events) ? events.map(normalize) : [];
+    } catch (error) {
+      console.error('Error loading events from backend:', error);
+      return [];
+    }
+  }
+
   // ===== State =====
   let events = [];                 // (optional) all events from API
   const saved = new Map();         // id -> normalized event
@@ -243,7 +259,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const removeBtn = document.createElement('button');
     removeBtn.className='btn btn-outline-danger';
     removeBtn.textContent='Remove from saved';
-    removeBtn.addEventListener('click',()=>{
+    removeBtn.addEventListener('click', async ()=>{
+      const event = saved.get(id);
+      if (event) {
+        // Delete from backend
+        try {
+          const response = await fetch('/api/delete-event', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              title: event.title
+            })
+          });
+          
+          if (!response.ok) {
+            console.warn('Failed to delete event from backend:', response.statusText);
+          }
+        } catch (error) {
+          console.error('Error deleting event from backend:', error);
+        }
+      }
+      
       saved.delete(id);
       writeSavedToStorage([...saved.values()]);
       selectedId=null;
@@ -312,6 +350,30 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!item) return;
     const id = item.dataset.id;
     if (e.target.closest('.btn-remove')){
+      const event = saved.get(id);
+      if (event) {
+        // Delete from backend
+        (async () => {
+          try {
+            const response = await fetch('/api/delete-event', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                title: event.title
+              })
+            });
+            
+            if (!response.ok) {
+              console.warn('Failed to delete event from backend:', response.statusText);
+            }
+          } catch (error) {
+            console.error('Error deleting event from backend:', error);
+          }
+        })();
+      }
+      
       saved.delete(id);
       writeSavedToStorage([...saved.values()]);
       if (selectedId===id) selectedId=null;
@@ -337,10 +399,20 @@ document.addEventListener('DOMContentLoaded', () => {
     renderSaved(); renderCalendar();
   }
 
+  // ===== Load saved from backend =====
+  async function loadSavedFromBackend(){
+    saved.clear();
+    const backendEvents = await loadEventsFromBackend();
+    for (const ev of backendEvents){
+      saved.set(ev.id, ev);
+    }
+    renderSaved(); renderCalendar();
+  }
+
   // ===== Init =====
-  (function init(){
+  (async function init(){
     renderWeekdays();
     renderAllEvents(events);     // no external data yet; shows empty message
-    loadSavedFromStorage();      // <-- pulls from localStorage and renders
+    await loadSavedFromBackend(); // <-- pulls from backend and renders
   })();
 });

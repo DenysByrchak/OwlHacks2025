@@ -48,13 +48,42 @@ class User(UserMixin):
 
         print(f"Event scheduled: {title} on {date} from {start_time} to {end_time} with price {price} and url {url}")
 
+    def delete_event(self, title):
+        events = self.get_events()
+        event_titles = [event['title'] for event in events]
+        if title not in event_titles:
+            return "Event not scheduled"
+
+        db = get_db()
+        db.execute(
+            f"DELETE FROM {self.id} WHERE title = ?",
+            (title,)
+        )
+        db.commit()
+
+        print(f"Event removed {title}")
+        return "Event removed successfully"
+
+
     def get_events(self):
-        event_names = []
+        events = []
 
         db = get_db()
 
-        events = db.execute(f"SELECT * FROM {self.id}")
-        for event in events.fetchall():
-            event_names.append(event[0])
+        events_data = db.execute(f"SELECT * FROM {self.id}")
+        for event in events_data.fetchall():
+            events.append({
+                'id': f"{self.id}-{event[0]}",  # Create unique ID
+                'title': event[0],
+                'date': event[1],
+                'start_time': event[2],
+                'end_time': event[3],
+                'price': event[4],
+                'url': event[5],
+                'start': f"{event[1]}T{event[2]}:00",  # ISO format for frontend
+                'end': f"{event[1]}T{event[3]}:00",    # ISO format for frontend
+                'location': 'Philadelphia',  # Default location
+                'notes': ''  # No notes field in current schema
+            })
 
-        return event_names
+        return events
