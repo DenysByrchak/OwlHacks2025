@@ -150,4 +150,5 @@ def parse_events(lat, lng):
     
 # 🔹 Run pipeline before server starts
 if __name__ == "__main__":
+    parse_events(39.952583, -75.165222)
     app.run(debug=True, ssl_context="adhoc")

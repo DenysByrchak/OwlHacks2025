@@ -116,8 +116,25 @@
 
       // Prefer ISO fields if your API has them; fall back to strings
       const title = ev.title ?? 'Untitled Event';
-      const location = ev.neighborhood ?? ev.location ?? 'Philadelphia';
-      const startIso = ev.startIso ?? ev.startISO ?? ev.startTimeIso ?? '';
+      const location = ev.neighborhood ?? ev.location ?? (Array.isArray(ev.address) ? ev.address.join(', ') : 'Philadelphia');
+      
+      // Build startIso from date and time if not provided
+      let startIso = ev.startIso ?? ev.startISO ?? ev.startTimeIso ?? '';
+      if (!startIso && ev.date && ev.time) {
+        // Parse date like "Sep 28" and time like "10:00 AM"
+        const currentYear = new Date().getFullYear();
+        const dateStr = `${ev.date} ${currentYear}`;
+        const timeStr = ev.time;
+        
+        try {
+          const eventDate = new Date(`${dateStr} ${timeStr}`);
+          if (!isNaN(eventDate.getTime())) {
+            startIso = eventDate.toISOString();
+          }
+        } catch (e) {
+          console.warn('Could not parse event date/time:', ev.date, ev.time);
+        }
+      }
 
       li.innerHTML = `
         <h3 class="event-title">${title}</h3>
@@ -135,6 +152,9 @@
 
       return li;
     }
+
+    // Make makeEventLI available globally for find-attractions.js
+    window.makeEventLI = makeEventLI;
 
     async function loadEvents() {
       const list = document.getElementById('eventsList');

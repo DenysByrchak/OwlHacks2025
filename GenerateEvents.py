@@ -38,15 +38,14 @@ def get_events(location_label):
     return events
 
 def get_events_for_today(event_results):
-  today = (datetime.date.today() + datetime.timedelta(days=1)).strftime("%b %d")
+    today = datetime.date.today().strftime("%b %d")
+    current_events = []
 
-  current_events = []
+    for event in event_results:
+        if event['date'] == today:
+            current_events.append(event)
 
-  for event in event_results:
-    if event['date'] == today:
-      current_events.append(event)
-
-  return current_events
+    return current_events
 
 def search_event_url(title, api_key):
     params = {
@@ -77,19 +76,20 @@ def generate_events(lat, lon):
     print("Neighborhood:", neighborhood)
     print("Locality:", locality)
 
-    try:
-        all_events = get_events(neighborhood)
-        currentEvents = get_events_for_today(all_events)
-        
-        currentEvents = fix_data(currentEvents) 
-            
-        with open("events_today.json", "w") as f:
-            json.dump(currentEvents, f, indent=2)
-    except:
+    all_events = get_events(neighborhood)
+    currentEvents = get_events_for_today(all_events)
+
+    if not (currentEvents):
         all_events = get_events(locality)
         currentEvents = get_events_for_today(all_events)
-        
-        currentEvents = fix_data(currentEvents)    
-            
+
+        currentEvents = fix_data(currentEvents)
+
+        with open("events_today.json", "w") as f:
+            json.dump(currentEvents, f, indent=2)
+
+    else:
+        currentEvents = fix_data(currentEvents)
+
         with open("events_today.json", "w") as f:
             json.dump(currentEvents, f, indent=2)
