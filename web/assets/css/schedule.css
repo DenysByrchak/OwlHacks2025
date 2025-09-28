@@ -1,234 +1,176 @@
 /* =========================================================
-   THEME TOKENS
+   Schedule UI — Bootstrap-first polish
    ========================================================= */
 :root {
-  --c-bg: #fff;
-  --c-text: #111827;
-  --c-muted: #6b7280;
-  --c-border: #e5e7eb;
-  --c-ring: #3b82f6;
-  --c-primary: #3b82f6;
-  --c-primary-pressed: #2563eb;
+  --cal-cell-min-h: 110px;
+  --app-radius: 12px;
+  --app-radius-sm: 10px;
 
-  --radius: 12px;
-  --radius-sm: 10px;
-  --shadow-lg: 0 20px 40px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.08);
+  --shadow-sm: 0 2px 8px rgba(16,24,40,.06);
+  --shadow-md: 0 6px 18px rgba(16,24,40,.10);
+  --shadow-lg: 0 14px 28px rgba(16,24,40,.12);
+
+  --ring: 0 0 0 3px color-mix(in srgb, var(--bs-primary) 35%, transparent);
 }
 
-/* =========================================================
-   LAYOUT
-   ========================================================= */
-#schedule {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 16px;
-  min-height: 100vh;
-}
+/* Layout basics */
+body { overflow-x: hidden; }
 
-html, body { overflow-x: hidden; }
-
-/* Left column (Saved events) */
-#saved-events > h2 {
-  position: sticky;
-  top: 0;
-  background: var(--c-bg);
-}
-
-/* Right column (Detail panel) — desktop: no inner scroll */
-#detail-panel {}
-
-/* Lists reset */
-ul[role="list"],
-#events-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-/* Event card */
-.event-item {
-  background: var(--c-bg);
-  border: 1px solid var(--c-border);
-  border-radius: var(--radius-sm);
-  padding: 10px;
-  margin-bottom: 10px;
-}
-
-/* =========================================================
-   AGENDA / DAY GROUPING
-   ========================================================= */
-.day-group { margin: 30px 0; }
-
-.day-header {
-  position: sticky;
-  top: 0;
-  background: var(--c-bg);
-  padding: 6px 0;
-  font-weight: 700;
-  border-bottom: 1px solid var(--c-border);
-}
-
-.slot {
-  border: 1px solid var(--c-border);
-  border-radius: 8px;
-  padding: 8px;
-  margin: 8px 0;
-}
-
-.slot .when { font-weight: 600; margin-right: 6px; }
-.slot .meta { color: var(--c-muted); font-size: 12px; }
-
-.slot.conflict {
-  border-left: 6px solid #dc2626;
-  background: #fff6f6;
-}
-
-/* =========================================================
-   DIALOGS (sheet-style) — applies to both .sheet and #eventPopout
-   ========================================================= */
-dialog.sheet,
-#eventPopout {
-  width: min(680px, 92vw);
-  border: 0;
-  border-radius: var(--radius);
-  padding: 0;
-  background: var(--c-bg);
+/* Header: subtle depth + glow */
+body > header {
+  position: relative;
   box-shadow: var(--shadow-lg);
-  color: var(--c-text);
+  background-image:
+    radial-gradient(1200px 260px at 50% -60px, rgba(255,255,255,.18), transparent 60%),
+    radial-gradient(800px 220px at 0% 0%, rgba(255,255,255,.12), transparent 60%),
+    radial-gradient(800px 220px at 100% 0%, rgba(255,255,255,.12), transparent 60%);
+}
+body > header .h4 { letter-spacing: .2px; }
+body > header p { opacity: .85 !important; }
+
+/* Cards: slightly lifted */
+.card {
+  border: 1px solid var(--bs-border-color);
+  border-radius: var(--app-radius);
+  box-shadow: var(--shadow-sm);
+}
+.card:hover { box-shadow: var(--shadow-md); }
+
+/* Saved list scroll area */
+#savedEvents {
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0,0,0,.25) transparent;
+}
+#savedEvents::-webkit-scrollbar { height: 8px; width: 8px; }
+#savedEvents::-webkit-scrollbar-thumb { background: rgba(0,0,0,.25); border-radius: 10px; }
+#savedEvents::-webkit-scrollbar-track { background: transparent; }
+
+/* Titles & meta typography inside list items */
+#savedEvents .title,
+#allEvents .title { font-weight: 600; }
+#savedEvents .meta,
+#allEvents .meta  { color: var(--bs-secondary-color); }
+
+/* List-group hover to match cards */
+.list-group-item-action:hover {
+  background-color: var(--bs-tertiary-bg);
 }
 
-dialog.sheet::backdrop,
-#eventPopout::backdrop {
-  background: rgba(0,0,0,.40);
+/* Weekday row above the calendar */
+.weekday-row {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: .5rem;
+  margin-bottom: .5rem;
+  color: var(--bs-secondary-color);
+  text-transform: uppercase;
+  font-size: .78rem;
+  letter-spacing: .04em;
+}
+.weekday-row > div {
+  text-align: center;
+  padding: .25rem 0;
+  border-radius: .4rem;
+  background: color-mix(in srgb, var(--bs-primary) 9%, var(--bs-body-bg));
+  border: 1px solid color-mix(in srgb, var(--bs-primary) 14%, var(--bs-border-color));
 }
 
-/* Legacy popout structure support */
-#eventPopoutForm { display: flex; flex-direction: column; }
-.popout-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--c-border);
-}
-.popout-body { padding: 16px; }
-.popout-close {
-  border: 0; background: transparent; font-size: 18px; line-height: 1; cursor: pointer;
-}
-.popout-meta { color: var(--c-muted); font-size: 14px; margin-bottom: 8px; }
-.popout-extras { margin-top: 12px; display: grid; gap: 8px; }
-
-/* Sheet utility classes (for newer dialogs) */
-.sheet__header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--c-border);
-}
-.sheet__title { margin: 0; font-size: 1.125rem; font-weight: 600; }
-.sheet__close {
-  appearance: none; border: 0; background: transparent; cursor: pointer;
-  width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center;
-}
-.sheet__close:hover { background: #f3f4f6; }
-.sheet__body { padding: 16px 20px; display: grid; gap: 14px; }
-.sheet__footer {
-  display: flex; justify-content: flex-end; gap: 10px; padding: 14px 20px;
-  border-top: 1px solid var(--c-border);
+/* Calendar grid */
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: .5rem;
 }
 
-/* Rounded form fields */
-.field { display: grid; gap: 6px; }
-.field label { font-size: .9rem; color: var(--c-muted); }
-.input, .textarea {
-  width: 100%; background: #fff; color: var(--c-text);
-  border: 1px solid var(--c-border); border-radius: 10px;
-  padding: 10px 12px; font-size: .95rem; line-height: 1.3;
+/* Day cell styles */
+.day {
+  position: relative;
+  min-height: var(--cal-cell-min-h);
+  padding: .45rem .5rem .5rem;
+  border: 1px solid var(--bs-border-color);
+  border-radius: .6rem;
+  background-color: var(--bs-body-bg);
+  box-shadow: var(--shadow-sm);
+  transition: background-color .12s ease, border-color .12s ease, box-shadow .12s ease, transform .06s ease;
 }
-.textarea { min-height: 84px; resize: vertical; }
-.input:focus, .textarea:focus {
-  outline: 2px solid transparent; border-color: var(--c-ring);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-ring) 35%, transparent);
+.day:hover {
+  background-color: var(--bs-tertiary-bg);
+  border-color: color-mix(in srgb, var(--bs-primary) 24%, var(--bs-border-color));
+  box-shadow: var(--shadow-md);
 }
-.hint { font-size: .85rem; color: var(--c-muted); }
+.day:active { transform: translateY(1px); }
 
-/* =========================================================
-   BUTTONS
-   ========================================================= */
-.btn,
-.btn-details,
-.btn-del {
-  appearance: none;
-  border: 1px solid var(--c-border);
-  background: #fafafa;
-  color: var(--c-text);
-  border-radius: 10px;
-  padding: 8px 14px;
-  cursor: pointer;
-  font-weight: 500;
+/* Day number chip */
+.day-number {
+  position: absolute;
+  top: .4rem;
+  right: .5rem;
+  font-size: .85rem;
+  color: var(--bs-secondary-color);
 }
 
-.btn:hover,
-.btn-details:hover,
-.btn-del:hover { background: #f3f4f6; }
-
-.btn-primary {
-  background: var(--c-primary);
-  border-color: var(--c-primary);
-  color: #fff;
+/* Calendar states */
+.day.has-event {
+  border-color: var(--bs-primary);
+  background-image: linear-gradient(180deg,
+    color-mix(in srgb, var(--bs-primary) 7%, transparent),
+    transparent 32%);
 }
-.btn-primary:hover {
-  background: var(--c-primary-pressed);
-  border-color: var(--c-primary-pressed);
-}
-.btn-ghost { background: transparent; }
-
-/* Specific delete hover treatment */
-.btn-del:hover {
-  background: #ffecec;
-  border-color: #f3c2c2;
-}
-.btn-del { color: #b00020; }
-
-/* Inline actions container */
-.event-actions { display: flex; gap: 8px; margin-top: 8px; }
-
-/* Remove animation */
-.fade-out {
-  opacity: 0;
-  height: 0 !important;
-  margin: 0 !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  transition: all .25s ease;
-  overflow: hidden;
+.day.selected {
+  outline: 3px solid var(--bs-primary);
+  outline-offset: 0;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--bs-primary) 25%, transparent);
 }
 
-/* =========================================================
-   RESPONSIVE
-   - Desktop: no inner scroll
-   - Mobile: inner scroll for left/right panes
-   ========================================================= */
-@media (min-width: 769px) {
-  /* Desktop: let panels grow naturally */
-  #saved-events,
-  #detail-panel {
-    overflow: visible !important;
-    max-height: none !important;
-  }
+/* Badges for event hints inside calendar cells */
+.day .badge {
+  font-weight: 600;
+  letter-spacing: .02em;
 }
 
-@media (max-width: 768px) {
-  /* Stack columns on mobile */
-  #schedule { grid-template-columns: 1fr; }
+/* Details pane spacing */
+#detailsContent .h5 { margin-bottom: .25rem; }
+#detailsContent p { margin-top: .25rem; }
 
-  /* Mobile: enable inner scrolling */
-  #saved-events,
-  #detail-panel {
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
-    max-height: calc(100vh - 140px) !important;
-    padding-right: 8px; /* avoid scrollbar overlay */
-  }
+/* Micro-utilities used by templates */
+.no-wrap       { white-space: nowrap; }
+.location-pill { font-size: .75rem; }
+.conflict-pill { font-size: .7rem; }
 
-  /* Keep headings sticky on mobile */
-  #saved-events > h2,
-  .day-header { position: sticky; top: 0; background: var(--c-bg); z-index: 1; }
+/* Buttons: refine hover states to feel crisp */
+.btn-outline-primary:hover,
+.btn-outline-secondary:hover {
+  box-shadow: 0 2px 10px rgba(13,110,253,.15);
 }
+
+/* “Clear” button (danger) */
+.btn-outline-danger:hover {
+  box-shadow: 0 2px 10px rgba(220,53,69,.16);
+}
+
+/* Focus visibility for keyboard users */
+button:focus-visible,
+a:focus-visible,
+.list-group-item-action:focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+  border-color: color-mix(in srgb, var(--bs-primary) 35%, var(--bs-border-color));
+  border-radius: .6rem;
+}
+
+/* Subtle separators in cards’ headers */
+.card > .card-header {
+  border-bottom: 1px solid var(--bs-border-color);
+  border-top-left-radius: var(--app-radius);
+  border-top-right-radius: var(--app-radius);
+}
+
+/* Optional: gentle entrance animation for lists */
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+#savedEvents .list-group-item,
+#allEvents .list-group-item { animation: fadeSlideIn .12s ease both; }
