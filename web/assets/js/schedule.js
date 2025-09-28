@@ -5,34 +5,113 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ===== Utilities =====
   const toDateOnly = (iso) => (typeof iso === 'string' && iso.length >= 10) ? iso.slice(0,10) : '';
-  const fmtTime = (d) => d.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
-  const fmtDateLabel = (isoDate) => new Date(isoDate + 'T00:00:00').toLocaleDateString(undefined,{month:'short',day:'numeric'});
-  const dayNum = (isoDate) => Number(isoDate.slice(-2));
+  const fmtTime = (d) => d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  const fmtDateLabel = (isoDate) => new Date(isoDate + 'T00:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  const dayNum = (isoDate) => Number((isoDate || '').slice(-2));
   const isValidDate = (d) => d instanceof Date && !isNaN(d.getTime());
 
-  // Convert stored entry -> view model the page expects
+  // normalize weird spacing e.g. "5 : 30 PM" -> "5:30 PM"
+  function cleanupTimeString(t){
+    return String(t || '').replace(/\s*:\s*/g, ':').replace(/\s+/g, ' ').trim();
+  }
+
+  function parseTimeString(t) {
+    if (!t) return null;
+    const s = cleanupTimeString(t);
+
+    // 12h: "5 PM" or "5:30 PM"
+    let m = s.match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/i);
+    if (m) {
+      let hh = Number(m[1]) % 12;
+      const mm = Number(m[2] || 0);
+      if (m[3].toUpperCase() === 'PM') hh += 12;
+      return { hh, mm };
+    }
+
+    // 24h: "17:30"
+    m = s.match(/^(\d{1,2}):(\d{2})(?::\d{2})?$/);
+    if (m) {
+      const hh = Number(m[1]), mm = Number(m[2]);
+      if (hh >= 0 && hh < 24 && mm >= 0 && mm < 60) return { hh, mm };
+    }
+    return null;
+  }
+
+  function isoFromDateAndTime(dateStr, timeStr) {
+    if (!dateStr) return '';
+    const d = toDateOnly(dateStr);
+    const tm = parseTimeString(timeStr);
+    const hh = tm ? tm.hh : 0;
+    const mm = tm ? tm.mm : 0;
+    const js = new Date(`${d}T00:00:00`);
+    if (!isValidDate(js)) return '';
+    js.setHours(hh, mm, 0, 0);
+    const y = js.getFullYear();
+    const m = String(js.getMonth()+1).padStart(2,'0');
+    const dd= String(js.getDate()).padStart(2,'0');
+    const H = String(js.getHours()).padStart(2,'0');
+    const M = String(js.getMinutes()).padStart(2,'0');
+    return `${y}-${m}-${dd}T${H}:${M}:00`;
+  }
+
+  // pretty join that skips empties so we never render "• • Philadelphia"
+  function bullets(...xs){
+    return xs.flatMap(x => (x ? [String(x).trim()] : [])).join(' • ');
+  }
+
+  // Convert backend row -> view model the page expects
   function normalize(entry){
-    // entry: {id,title,location,start,end,notes}
-    const start = new Date(entry.start);
-    const end   = entry.end ? new Date(entry.end) : null;
+    const title = entry.title ?? entry.name ?? 'Untitled Event';
+    const location = entry.location
+      ?? (Array.isArray(entry.address) ? entry.address.join(', ') : entry.venue)
+      ?? CITY;
 
-    const validStart = isValidDate(start);
-    const validEnd   = end && isValidDate(end);
+    // date
+    let date = '';
+    if (entry.date) date = String(entry.date).slice(0,10);
+    else if (entry.start) date = String(entry.start).slice(0,10);
 
-    const date  = validStart ? toDateOnly(entry.start) : '';
-    const time  = validStart
-      ? (validEnd ? `${fmtTime(start)}–${fmtTime(end)}` : fmtTime(start))
-      : '';
+    // build start/end ISO
+    let startISO = '';
+    let endISO   = '';
+
+    if (entry.start || entry.end) {
+      startISO = typeof entry.start === 'string' ? entry.start : '';
+      endISO   = typeof entry.end   === 'string' ? entry.end   : '';
+    } else if (entry.date && (entry.start_time || entry.end_time)) {
+      const st = cleanupTimeString(entry.start_time);
+      const et = cleanupTimeString(entry.end_time);
+      startISO = isoFromDateAndTime(entry.date, st);
+      endISO   = et ? isoFromDateAndTime(entry.date, et) : '';
+    }
+
+    // display time label
+    let timeLabel = '';
+    if (startISO) {
+      const s = new Date(startISO);
+      if (isValidDate(s)) {
+        if (endISO) {
+          const e = new Date(endISO);
+          timeLabel = isValidDate(e)
+            ? `${fmtTime(s)}–${fmtTime(e)}`
+            : fmtTime(s);
+        } else {
+          timeLabel = fmtTime(s);
+        }
+      }
+    } else if (entry.start_time) {
+      timeLabel = cleanupTimeString(entry.start_time);
+    }
 
     return {
       id: String(entry.id ?? (crypto.randomUUID ? crypto.randomUUID() : ('id-'+Date.now()))),
-      title: entry.title ?? 'Untitled Event',
-      location: entry.location ?? CITY,
-      date,
-      time,
-      startISO: validStart ? entry.start : '',
-      endISO: validEnd ? entry.end : '',
-      notes: entry.notes || ''
+      title,
+      location,
+      date: date || '',
+      time: timeLabel,
+      startISO: startISO || '',
+      endISO: endISO || '',
+      notes: entry.notes ?? entry.desc ?? ''
     };
   }
 
@@ -62,8 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn('Failed to load events from backend:', response.statusText);
         return [];
       }
-      const events = await response.json();
-      return Array.isArray(events) ? events.map(normalize) : [];
+      const data = await response.json();
+      return Array.isArray(data) ? data.map(normalize) : [];
     } catch (error) {
       console.error('Error loading events from backend:', error);
       return [];
@@ -71,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== State =====
-  let events = [];                 // (optional) all events (public/explore) if you add a source
+  let events = [];                 // public/explore list (optional)
   const saved = new Map();         // id -> normalized event
   let selectedId = null;
 
@@ -121,8 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const idx = new Map();
     const { ymKey } = monthInfo();
     for (const ev of saved.values()){
-      // only index events for the current month
-      if (!ev.date || ev.date.slice(0,7) !== ymKey) continue;
+      if (!ev.date || ev.date.slice(0,7) !== ymKey) continue; // only current month
       const d = dayNum(ev.date);
       if (!idx.has(d)) idx.set(d, []);
       idx.get(d).push(ev);
@@ -198,16 +276,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const frag = document.createDocumentFragment();
     const tpl = els.savedItemTpl.content.firstElementChild;
-    [...saved.values()]
-      .sort((a,b)=> a.date.localeCompare(b.date) || (a.time||'').localeCompare(b.time||''))
-      .forEach(ev=>{
-        const item = tpl.cloneNode(true);
-        item.dataset.id = ev.id;
-        item.querySelector('.title').textContent = ev.title ?? '';
-        item.querySelector('.meta').textContent =
-          `${ev.date ? fmtDateLabel(ev.date) : ''} • ${ev.time || ''} • ${ev.location || ''}`;
-        frag.appendChild(item);
-      });
+
+    // prefer sorting by startISO; fallback to date/time text
+    const arr = [...saved.values()];
+    arr.sort((a,b)=>{
+      const aKey = a.startISO || (a.date ? a.date+'T00:00:00' : '');
+      const bKey = b.startISO || (b.date ? b.date+'T00:00:00' : '');
+      return aKey.localeCompare(bKey) || (a.title||'').localeCompare(b.title||'');
+    });
+
+    for (const ev of arr){
+      const item = tpl.cloneNode(true);
+      item.dataset.id = ev.id;
+      item.querySelector('.title').textContent = ev.title ?? '';
+      item.querySelector('.meta').textContent = bullets(
+        ev.date ? fmtDateLabel(ev.date) : '',
+        ev.time || '',
+        ev.location || ''
+      );
+      frag.appendChild(item);
+    }
     wrap.appendChild(frag);
     if (els.toggleViewBtn) els.toggleViewBtn.disabled = (saved.size === 0 || selectedId == null);
   }
@@ -236,8 +324,11 @@ document.addEventListener('DOMContentLoaded', () => {
       cityBadge.textContent = CITY;
       titleEl.append(' ', cityBadge);
 
-      row.querySelector('.meta').textContent =
-        `${ev.date ? fmtDateLabel(ev.date) : ''} • ${(ev.time ?? '')} • ${(ev.location ?? '')}`;
+      row.querySelector('.meta').textContent = bullets(
+        ev.date ? fmtDateLabel(ev.date) : '',
+        ev.time || '',
+        ev.location || ''
+      );
 
       const btn = row.querySelector('.btn-save');
       btn.textContent = saved.has(ev.id) ? 'Saved' : 'Add to saved';
@@ -260,8 +351,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const meta = document.createElement('div');
     meta.className='text-secondary mb-2';
-    meta.textContent =
-      `${ev.date ? fmtDateLabel(ev.date) : ''} • ${ev.time || ''} • ${ev.location || ''}`;
+    meta.textContent = bullets(
+      ev.date ? fmtDateLabel(ev.date) : '',
+      ev.time || '',
+      ev.location || ''
+    );
 
     const notes = document.createElement('p');
     notes.className='mb-0';
@@ -276,12 +370,11 @@ document.addEventListener('DOMContentLoaded', () => {
     removeBtn.addEventListener('click', async ()=>{
       const event = saved.get(id);
       if (event) {
-        // Delete from backend (by title; switch to id when available)
         try {
           const response = await fetch('/api/delete-event', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title: event.title })
+            body: JSON.stringify({ title: event.title }) // backend expects title
           });
           if (!response.ok) console.warn('Failed to delete event from backend:', response.statusText);
         } catch (error) {
@@ -308,7 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function highlightDay(isoDate){
-    const d = Number(isoDate.slice(-2));
+    const d = Number((isoDate || '').slice(-2));
     document.querySelectorAll('.day.selected').forEach(el=>el.classList.remove('selected'));
     const cell = document.querySelector(`.day[data-day="${d}"]`);
     if (cell){
@@ -339,7 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Refresh: reload saved events from backend, and re-render
   els.refreshBtn.addEventListener('click', async ()=>{
     await loadSavedFromBackend();
-    renderAllEvents(events); // keep this, in case you later set `events` from a public feed
+    renderAllEvents(events); // keep for future public feed
   });
 
   // Saved list: delegate clicks (row select vs ✕ remove)
@@ -357,7 +450,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('/api/delete-event', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ title: event.title })
+              body: JSON.stringify({ title: event.title }) // backend expects title
             });
             if (!response.ok) console.warn('Failed to delete event from backend:', response.statusText);
           } catch (error) {
