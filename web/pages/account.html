@@ -1,0 +1,110 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Map & Events</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+<link rel="stylesheet" href="../assets/css/style.css">
+</head><body>
+<div id="nav-root"></div>
+
+<header class = "hero">
+  <p class="headline">Your Account</p>
+  <p class="tagline">Manage Your Account Information</p>
+
+<nav class="navbar" aria-label="Primary">
+  <div class="nav-inner">
+    <a href="./landing.html" class="logo" aria-label="Home">🏙️</a>
+    <ul class="nav-pills" role="menubar">
+      <li role="none"><a role="menuitem" href="./events.html"   data-key="events" class="pill">Map & Events</a></li>
+      <li role="none"><a role="menuitem" href="./schedule.html" data-key="sched"  class="pill">Your Schedule</a></li>
+      <li role="none"><a role="menuitem" href="./account.html"  data-key="account"class="pill">Account</a></li>
+      <li role="none"><a role="menuitem" href="./about.html"    data-key="about"  class="pill">About</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section id="Account" class="card" aria-labelledby="account">
+  <h2 id="account">Account Settings</h2>
+  <p class="hint"></p>
+
+<div class="fields">
+    <form id="profile-form" autocomplete="off">
+        
+        <div> <label for="email">Email</label> </div>
+        <input id="email" name="email" type="email" autocomplete="email">
+
+        <div><label for="password">Password</label></div>
+        <input id="username" name="username" type="text" autocapitalize="none">
+
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="primary">Save changes</button>
+      <button type="button" class="link" id="cancel-profile">Cancel</button>
+      <span id="profile-status" role="status" aria-live="polite"></span>
+    </div>
+  </form>
+</section>
+
+<section id="saved-schedules-link" class="card" aria-labelledby="saved-schedules-title">
+  <h2 id="saved-schedules-title">Saved Events</h2>
+  <p class="hint">View and manage all the schedules you’ve saved.</p>
+  <a href="events.html" class="button">Go to Saved Events</a>
+</section>
+
+<section id="danger-zone" class="card" aria-labelledby="danger-title">
+<h2 id="danger-title">Account Deletion</h2>
+<p class="hint">Deleting your account is permanent. Please be sure.</p>
+
+
+<button id="delete-account-btn" class="danger">
+Delete My Account
+</button>
+
+
+<dialog id="delete-dialog">
+<form method="dialog" id="delete-form">
+<h3>Confirm Account Deletion</h3>
+<p>This action cannot be undone. To confirm, type <strong>DELETE</strong> below.</p>
+
+
+<label for="confirm-text">Type DELETE:</label>
+<input id="confirm-text" name="confirm" type="text" autocomplete="off" required>
+
+
+<div class="actions">
+<button type="button" id="cancel-delete">Cancel</button>
+<button id="confirm-delete" class="danger" disabled>Delete Permanently</button>
+</div>
+</form>
+</dialog>
+</section>
+
+
+<script>
+const deleteBtn = document.getElementById("delete-account-btn");
+const dialog = document.getElementById("delete-dialog");
+const confirmInput = document.getElementById("confirm-text");
+const confirmDeleteBtn = document.getElementById("confirm-delete");
+
+
+deleteBtn.addEventListener("click", () => dialog.showModal());
+
+
+confirmInput.addEventListener("input", () => {
+confirmDeleteBtn.disabled = confirmInput.value !== "DELETE";
+});
+
+
+confirmDeleteBtn.addEventListener("click", (e) => {
+e.preventDefault();
+dialog.close();
+alert("Account deleted (replace with real logic).");
+});
+
+const cancelBtn = document.getElementById("cancel-delete");
+
+cancelBtn.addEventListener("click", () => {
+  dialog.close();
+});
+</script>
