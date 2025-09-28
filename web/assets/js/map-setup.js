@@ -1,3 +1,4 @@
+// /assets/js/map-setup.js
 export function bootMap() {
   const el = document.getElementById('map');
   if (!el) return null;
@@ -5,7 +6,7 @@ export function bootMap() {
   const PHILLY = [39.9526, -75.1652];
 
   // Disable default zoom so we can control order
-  const map = L.map(el, { zoomControl: false }).setView(PHILLY, 12);
+  const map = L.map(el, { zoomControl: false }).setView(PHILLY, 13);
 
   // Match events page positions
   map.attributionControl.setPosition('bottomright');
@@ -26,21 +27,17 @@ export function bootMap() {
   );
 
   // Zoom ABOVE layers (same stack as events.html)
-
   L.control.layers(
     { 'CARTO Light (clean)': cartoLight, 'CARTO Voyager (colorful)': cartoVoyager },
     null,
     { position: 'bottomright', collapsed: false }
   ).addTo(map);
-    L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-  // Scale key bottom-left (same as events)
+  L.control.zoom({ position: 'bottomright' }).addTo(map);
+
   L.control.scale({ position: 'bottomleft', metric: true, imperial: true }).addTo(map);
 
-  // Example marker
-  L.marker([39.9526, -75.1639], { title: 'Philadelphia City Hall' })
-    .addTo(map)
-    .bindPopup('<b>Philadelphia City Hall</b>');
+  window.map = map;
 
   return map;
 }

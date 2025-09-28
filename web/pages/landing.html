@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <!-- critical head -->
   <meta charset="utf-8" />
@@ -13,10 +12,10 @@
   <link rel="stylesheet" href="/assets/css/bootstrap-overrides.css">
   <link rel="stylesheet" href="/assets/css/landing.css">
 
-  <!-- Bootstrap JS loader -->
+  <!-- Optional head augments -->
   <script type="module">
     import { loadHead } from '../assets/js/include-head.js';
-    loadHead();
+    loadHead?.();
   </script>
 </head>
 
@@ -38,29 +37,39 @@
 
       <!-- Always-visible CTA inside the window -->
       <button id="cta" class="btn btn-lg btn-glass glass-pill cta-float">
-        <span>Find An Attraction</span>
+        <span>Find An Event</span>
         <span class="me-2" aria-hidden="true">➜</span>
       </button>
-      </div>
-      </main>
+    </div>
+  </main>
 
   <!-- Leaflet before bootMap -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js" defer></script>
+
+  <!-- Page boot -->
   <script type="module">
     import { loadNav } from '../assets/js/include-nav.js';
     import { bootMap } from '../assets/js/map-setup.js';
 
     loadNav('/pages/landing.html');
 
+    // Wait for Leaflet to be on window
     const ready = () => window.L ? Promise.resolve() : new Promise(r => {
       const i = setInterval(() => { if (window.L) { clearInterval(i); r(); } }, 20);
     });
 
-    ready().then(() => {
-      bootMap();
-      document.getElementById('cta').onclick = () => location.href = './events';
+    ready().then(async () => {
+      // Initialize the map
+      const mapFromBoot = await bootMap?.();
+      // Ensure a global for landing-pois.js (works even if bootMap doesn't return)
+      window.map = window.map || mapFromBoot;
+
+      // Load POIs ONLY on landing
+      await import('../assets/js/landing-pois.js');
+
+      // CTA -> Events page
+      document.getElementById('cta').onclick = () => location.href = './events.html';
     });
   </script>
 </body>
-
 </html>
