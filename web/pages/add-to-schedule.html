@@ -1,0 +1,54 @@
+<!-- Add-to-Schedule Modal -->
+<div class="modal fade" id="addToScheduleModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form id="scheduleForm">
+        <div class="modal-header">
+          <h5 class="modal-title">Add to Schedule</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Event</label>
+            <input id="fTitle" class="form-control" type="text" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Location</label>
+            <input id="fLocation" class="form-control" type="text" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Start</label>
+            <input id="fStart" class="form-control" type="datetime-local" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">End <span class="text-muted">(required)</span></label>
+            <input id="fEnd" class="form-control" type="datetime-local" required>
+            <div class="form-text">Choose when you expect to finish.</div>
+          </div>
+          <div class="mb-0">
+            <label class="form-label">Notes (optional)</label>
+            <textarea id="fNotes" class="form-control" rows="2" placeholder="Meet friends after…"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+          <button id="confirmAddBtn" type="submit" class="btn btn-primary">Confirm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Toast (feedback) -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080">
+  <div id="addToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <strong class="me-auto">Schedule</strong>
+      <small>Just now</small>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">Event added to your schedule ✅</div>
+  </div>
+</div>
