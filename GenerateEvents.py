@@ -38,7 +38,7 @@ def get_events(location_label):
     return events
 
 def get_events_for_today(event_results):
-  today = datetime.date.today().strftime("%b %d")
+  today = (datetime.date.today() + datetime.timedelta(days=1)).strftime("%b %d")
 
   current_events = []
 
@@ -69,13 +69,10 @@ def fix_data(currentEvents):
             event["price"] = "Check Website"
         
     return currentEvents
-def generate_events():
+def generate_events(lat, lon):
     # 🔹 Example coordinates (Center City West)
-    lat = 39.95307654455367
-    lon = -75.2120968398999
 
-
-    neighborhood, locality = get_location_labels(lat, lon, google_maps_api_key)
+    neighborhood, locality = get_location_labels(lat, lon, "AIzaSyBs86ACXN8GZfcrTzaTgenOFwaXJ-HmQIQ")
 
     print("Neighborhood:", neighborhood)
     print("Locality:", locality)

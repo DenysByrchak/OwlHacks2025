@@ -1,6 +1,5 @@
 from serpapi import GoogleSearch
 import datetime
-import json
 
 def get_events(location):
   params = {
@@ -29,4 +28,3 @@ def get_events_for_today(event_results):
 
   return current_events
 
-allEvents = get_events("North Philadelphia")

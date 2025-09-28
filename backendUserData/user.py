@@ -1,6 +1,6 @@
 from flask_login import UserMixin
 
-from db import get_db, make_schedule, add_user, get_user
+from .db import get_db, make_schedule, add_user, get_user
 
 class User(UserMixin):
     def __init__(self, id_, name, email, profile_pic):
@@ -45,6 +45,8 @@ class User(UserMixin):
             (title, date, start_time, end_time, price, url),
         )
         db.commit()
+
+        print(f"Event scheduled: {title} on {date} from {start_time} to {end_time} with price {price} and url {url}")
 
     def get_events(self):
         event_names = []
