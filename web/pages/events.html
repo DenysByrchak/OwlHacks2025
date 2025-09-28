@@ -13,6 +13,8 @@
   <!-- Project CSS -->
   <link rel="stylesheet" href="../assets/css/events.css">
   <link rel="stylesheet" href="../assets/css/style.css">
+  <!-- Popout z-index shim -->
+  <link rel="stylesheet" href="../assets/css/popout-schedule.css">
 
   <!-- Optional head injections (favicons, meta, etc.) -->
   <script type="module">
@@ -78,8 +80,8 @@
     </section>
   </main>
 
-  <!-- Inject the modal/Toast partial (kept in its own file) -->
-  <div data-include="/pages/add-to-schedule.html"></div>
+  <!-- Inject the NEW popout modal/Toast partial -->
+  <div data-include="/partials/popout-schedule.html"></div>
 
   <!-- JS: Leaflet first, then Bootstrap bundle for modal/toast -->
   <script src="https://unpkg.com/leaflet/dist/leaflet.js" defer></script>
@@ -106,8 +108,7 @@
     });
 
     /**
-     * Helper: turn event object into DOM <li> and auto-wire data-* for the modal.
-     * You don't have to hand-edit each item.
+     * Helper: turn event object into DOM <li> and auto-wire data-* for the popout.
      */
     function makeEventLI(ev) {
       const li = document.createElement('li');
@@ -124,9 +125,9 @@
         <button class="event-action btn btn-outline-primary btn-sm">Add to Schedule</button>
       `;
 
-      // Auto-add the data attributes the modal script expects (no manual markup)
+      // Optional but helpful: provide data-* for precision (popout can also infer)
       const btn = li.querySelector('.event-action');
-      btn.dataset.addToSchedule = '';           // presence is enough
+      btn.dataset.addToSchedule = '';
       btn.dataset.id = ev.id ?? crypto.randomUUID?.() ?? `ev-${Date.now()}`;
       btn.dataset.title = title;
       btn.dataset.location = location;
@@ -139,7 +140,7 @@
       const list = document.getElementById('eventsList');
       if (!list) return;
 
-      // First, auto-wire the fallback samples already in the HTML
+      // Auto-wire the fallback samples already in the HTML (no manual attrs needed)
       list.querySelectorAll('.event-card').forEach((card, idx) => {
         const title = card.querySelector('.event-title')?.textContent?.trim() || `Sample Event ${idx+1}`;
         const meta = card.querySelector('.event-meta')?.textContent || '';
@@ -147,11 +148,11 @@
         const btn = card.querySelector('.event-action');
         if (!btn) return;
         btn.classList.add('btn','btn-outline-dark','btn-sm');
+        // Provide data-* so popout is precise; if omitted, popout will infer.
         btn.dataset.addToSchedule = '';
         btn.dataset.id = `sample-${idx+1}`;
         btn.dataset.title = title;
         btn.dataset.location = location;
-        // Optional: guess a start time so the modal has a sensible default
         const guess = new Date(); guess.setHours(17,30,0,0);
         btn.dataset.startIso = guess.toISOString();
       });
@@ -179,10 +180,10 @@
   <!-- Geolocation helper (uses #findAttractionsBtn and #locationStatus) -->
   <script src="../assets/js/find-attractions.js" defer></script>
 
-  <!-- Partials loader (injects /pages/add-to-schedule.html) -->
+  <!-- Partials loader (injects the popout partial) -->
   <script src="../assets/js/partials.js"></script>
 
-  <!-- Modal wiring + localStorage schedule logic -->
-  <script src="../assets/js/schedule.js"></script>
+  <!-- NEW: Popout class (handles clicks & saving to localStorage) -->
+  <script src="../assets/js/popout-schedule.js"></script>
 </body>
 </html>
