@@ -10,10 +10,20 @@ app = Flask(__name__, static_folder="web")
 def serve_landing():
     return send_from_directory("web/pages", "landing.html")
 
+    """_summary_
 # 🔹 Serve other HTML pages
 @app.route("/<page>")
 def serve_page(page):
     return send_from_directory("web/pages", f"{page}.html")
+
+    Returns:
+        _type_: _description_
+    """
+
+# 🔹 Serve other HTML pages
+@app.route("/schedule")
+def serve_schedule(page):
+    return send_from_directory("web/pages", "schedule.html")
 
 @app.route("/partials/<path:path>")
 def serve_partials(path):
