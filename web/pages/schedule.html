@@ -2,221 +2,382 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Schedule</title>
-
-  <!-- Stylesheets -->
-  <link rel="stylesheet" href="../assets/css/schedule.css" />
-
-  <!-- Inline styles (dialog + small utilities) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Philly Itinerary — Linked List & Calendar</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    /* Dialog (event popout) */
-    #eventPopout {
-      width: min(640px, 92vw);
-      border: none;
-      border-radius: 12px;
-      padding: 0;
-      box-shadow: 0 10px 12px rgba(0,0,0,.25);
-    }
-    #eventPopout::backdrop { background: rgba(0,0,0,.4); }
-    #eventPopoutForm { display: flex; flex-direction: column; }
-
-    .popout-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 16px;
-      border-bottom: 1px solid #e5e5e5;
-    }
-    .popout-body { padding: 16px; }
-    .popout-close { border: 0; background: transparent; font-size: 18px; line-height: 1; cursor: pointer; }
-    .popout-meta { color: #666; font-size: 14px; margin-bottom: 8px; }
-    .popout-extras { margin-top: 12px; display: grid; gap: 8px; }
-
-    /* Buttons / cards */
-    .event-details-btn { border: 1px solid #ddd; background: #fafafa; border-radius: 20px; padding: 6px 10px; cursor: pointer; }
-    .event-details-btn:hover { background: #f0f0f0; }
-    .card-like { border: 1px solid #ddd; border-radius: 14px; padding: 8px; margin-top: 6px; }
-
-    /* Mini calendar + agenda */
-    .calendar-wrap { margin-top: 8px; }
-    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: .5rem; }
-    .calendar-head { text-align: center; font-weight: 600; font-size: .85rem; }
-    .calendar-cell { border: 1px solid #ddd; border-radius: .5rem; padding: .5rem; min-height: 68px; text-align: left; background:#fff; }
-    .calendar-day-num { font-weight: 600; margin-bottom: .25rem; }
-    .calendar-dots { margin-top: .25rem; display: flex; gap: 4px; flex-wrap: wrap; }
-    .calendar-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .8; }
-    .agenda-day { position: sticky; top: 0; background: #fff; z-index: 1; padding: .5rem 0; border-bottom: 1px solid #eee; }
-    .agenda-item { border: 1px solid #ddd; border-radius: .5rem; padding: .5rem .75rem; margin: .5rem 0; background:#fff; }
-    .agenda-meta { color: #666; font-size: .85rem; }
-    .view-toggle { display:flex; gap:.5rem; align-items:center; margin: .5rem 0 1rem; }
-    .view-toggle button { border:1px solid #ddd; background:#fafafa; border-radius:8px; padding:6px 10px; cursor:pointer; }
-    .view-toggle button.active { background:#e9f2ff; border-color:#bcd7ff; }
-
+    body { overflow-x: hidden; }
+    #savedEvents { max-height: calc(100vh - 140px); overflow-y: auto; }
+    .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: .5rem; }
+    .day { min-height: 90px; border: 1px solid var(--bs-border-color); border-radius: .5rem; padding: .25rem .35rem; position: relative; }
+    .day-number { position: absolute; top: .25rem; right: .4rem; font-size: .85rem; color: var(--bs-secondary-color); }
+    .day.has-event { border-color: var(--bs-primary); }
+    .day.selected { outline: 3px solid var(--bs-primary); outline-offset: 0; }
+    .no-wrap { white-space: nowrap; }
+    .location-pill { font-size: .75rem; }
+    .conflict-pill { font-size: .7rem; }
   </style>
 </head>
-
-<body>
-  <!-- ===================================== -->
-  <!-- Header                                -->
-  <!-- ===================================== -->
-  <header style="width:100%;background:#3b82f6;color:#fff;padding:16px;text-align:center;margin:0 0 16px 0;">
-    <h1 style="margin:0;font-size:1.6rem;">Your Schedule & Events</h1>
-    <p style="margin:4px 0 0;">Plan your trip in Philadelphia!</p>
+<body class="bg-light">
+  <header class="w-100 bg-primary text-white text-center py-3 mb-3">
+    <h1 class="h4 mb-0">Philadelphia Trip Planner</h1>
+    <p class="mb-0 opacity-75">Saved list ↔ calendar, duration-aware, conflict-checking</p>
   </header>
 
-  <!-- ===================================== -->
-  <!-- Main                                  -->
-  <!-- ===================================== -->
-  <main id="schedule" role="main" aria-label="Schedule">
-
-    <!-- -------- Left: Saved events -------- -->
-    <aside id="saved-events" aria-label="Saved events">
-      <h2>Saved Events</h2>
-
-      <ul id="events-list" role="list">
-        <!-- Event 1 -->
-        <li class="event-item"
-            data-id="e_1"
-            data-start="2025-10-03T09:00"
-            data-end="2025-10-03T10:00"
-            data-place="Neighborhood">
-          <h3 class="event-title">Your event</h3>
-          <p class="event-meta">Neighborhood • Date & Time</p>
-          <p class="event-desc">Event description popout</p>
-          <button type="button" class="event-details-btn" data-action="open-desc">Details</button>
-          <button type="button" class="btn-del" data-action="delete-event">Delete</button>
-        </li>
-
-        <!-- Event 2 -->
-        <li class="event-item"
-            data-id="e_2"
-            data-start="2025-10-03T10:00"
-            data-end="2025-10-03T10:30"
-            data-place="Center City">
-          <h3 class="event-title"></h3>
-          <p class="event-meta">Center City • Oct 3, 10:00 AM</p>
-          <p class="event-desc">Great espresso spot.</p>
-          <button type="button" class="event-details-btn" data-action="open-desc">Details</button>
-          <button type="button" class="btn-del" data-action="delete-event">Delete</button>
-          <div class="event-actions">
+  <main class="container-fluid">
+    <div class="row g-3">
+      <!-- Left: Saved (Favorited) Events -->
+      <aside class="col-12 col-lg-4">
+        <div class="card shadow-sm">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span class="fw-semibold">Saved events</span>
+            <div class="d-flex gap-2">
+              <button id="addMockBtn" class="btn btn-sm btn-outline-secondary">Add mock</button>
+              <button id="clearSavedBtn" class="btn btn-sm btn-outline-danger">Clear</button>
+            </div>
           </div>
-        </li>
-      </ul>
+          <div id="savedEvents" class="list-group list-group-flush" aria-label="Saved events list"></div>
+        </div>
+      </aside>
 
-      <p id="events-empty" hidden>No saved events yet.</p>
-    </aside>
+      <!-- Right: Calendar / Details -->
+      <section class="col-12 col-lg-8">
+        <div class="card shadow-sm">
+          <div class="card-header d-flex flex-wrap gap-2 justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+              <h2 id="monthLabel" class="h5 mb-0"></h2>
+              <span class="badge text-bg-light">current month only</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <button id="toggleViewBtn" class="btn btn-sm btn-primary" disabled>
+                <span class="no-wrap">Show details</span>
+              </button>
+            </div>
+          </div>
 
-    <!-- -------- Right: Detail panel -------- -->
-    <section id="detail-panel" aria-live="polite">
-      <article id="event-detail" hidden aria-labelledby="detail-title">
-        <h2 id="detail-title">Event Title</h2>
-        <p id="detail-meta">When • Where</p>
+          <div id="calendarView" class="card-body">
+            <div class="calendar" id="calendarGrid" aria-label="Calendar grid"></div>
+            <div class="mt-3 small text-secondary">Tip: Click a saved event on the left to highlight its day. Click a day cell to see events on that day.</div>
+          </div>
 
-        <section aria-label="Description">
-          <h3>Description</h3>
-          <p id="detail-desc">Description text here.</p>
-        </section>
+          <div id="detailsView" class="card-body" hidden>
+            <div id="detailsContent"></div>
+            <div class="mt-3">
+              <button class="btn btn-outline-secondary" id="backToCalendarBtn">Back to calendar</button>
+            </div>
+          </div>
+        </div>
 
-        <section aria-label="Nearby recommendations">
-          <h3>Recommended nearby</h3>
-          <ul id="detail-recs" role="list"></ul>
-        </section>
-      </article>
-
-      <article id="overall-schedule">
-        <h2>Your Calendar</h2>
-
-      </article>
-    </section>
+        <!-- All events (fetched + Philly-only) -->
+        <div class="card mt-3">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <span>All events in Philadelphia</span>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-outline-secondary" id="useLocationBtn">Use my location</button>
+              <button class="btn btn-sm btn-outline-primary" id="refreshBtn">Refresh</button>
+            </div>
+          </div>
+          <div class="list-group list-group-flush" id="allEvents"></div>
+        </div>
+      </section>
+    </div>
   </main>
 
-  <!-- ===================================== -->
-  <!-- Dialog: Event Description Popout       -->
-  <!-- ===================================== -->
-  <dialog id="eventPopout">
-    <form method="dialog" id="eventPopoutForm">
-      <header class="popout-header">
-        <h3 id="popoutTitle">Event</h3>
-        <button class="popout-close" aria-label="Close">✕</button>
-      </header>
-      <div class="popout-body">
-        <div id="popoutMeta" class="popout-meta"></div>
-        <p id="popoutDesc"></p>
-        <div id="popoutExtras" class="popout-extras"></div>
+  <template id="savedItemTpl">
+    <button type="button" class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
+      <div class="ms-2 me-auto">
+        <div class="fw-semibold title"></div>
+        <div class="small text-secondary meta"></div>
       </div>
-    </form>
-  </dialog>
+      <span class="badge rounded-pill align-self-center btn-remove" title="Remove from saved">✕</span>
+    </button>
+  </template>
 
-  <!-- ===================================== -->
-  <!-- Scripts                               -->
-  <!-- ===================================== -->
+  <template id="allEventTpl">
+    <div class="list-group-item d-flex justify-content-between align-items-start">
+      <div class="ms-2 me-auto">
+        <div class="fw-semibold title"></div>
+        <div class="small text-secondary meta"></div>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge text-bg-warning conflict-pill d-none">Conflict</span>
+        <button class="btn btn-sm btn-outline-primary btn-save">Add to saved</button>
+      </div>
+    </div>
+  </template>
+
   <script>
-    (function(){
-      const popout       = document.getElementById('eventPopout');
-      const popoutTitle  = document.getElementById('popoutTitle');
-      const popoutMeta   = document.getElementById('popoutMeta');
-      const popoutDesc   = document.getElementById('popoutDesc');
-      const popoutExtras = document.getElementById('popoutExtras');
+    // ===== City & Shape =====
+    const CITY = "Philadelphia";
+    // Internal event shape:
+    // { id, title, date:'YYYY-MM-DD', time:'h:mm AM', desc, location, lat, lon, favorited,
+    //   durationMinutes?: number, url?, thumbnail?, price? }
 
-      // Open description popout
-      document.addEventListener('click', (e) => {
-        const btn = e.target.closest('[data-action="open-desc"]');
-        if (!btn) return;
+    // ===== Duration / Time helpers =====
+    function monthDayToISOThisYear(mdStr){
+      const now = new Date();
+      const y = now.getFullYear();
+      const d = new Date(`${mdStr} ${y}`);
+      if (isNaN(d.getTime())) return `${y}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+      return `${y}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+    function normalizeDuration(val){
+      if (val == null) return null;
+      if (typeof val === 'number' && !isNaN(val)) return Math.max(0, Math.floor(val));
+      if (typeof val === 'string'){
+        const m = val.match(/(?:(\d+)\s*h)?\s*(?:(\d+)\s*m)?/i);
+        if (m){ const h = m[1]?parseInt(m[1],10):0; const mins = m[2]?parseInt(m[2],10):0; if (h||mins) return h*60+mins; }
+        const asNum = parseInt(val,10); if (!isNaN(asNum)) return asNum;
+      }
+      return null;
+    }
+    function startDateTime(ev){ return new Date(`${ev.date} ${ev.time}`); }
+    function endDateTime(ev){ const s = startDateTime(ev); if (!ev.durationMinutes) return null; return new Date(s.getTime() + ev.durationMinutes*60000); }
+    function fmtTime(d){ return d.toLocaleTimeString([], { hour:'numeric', minute:'2-digit' }); }
+    function timeRangeLabel(ev){ const s=startDateTime(ev), e=endDateTime(ev); return e?`${fmtTime(s)} – ${fmtTime(e)}`:ev.time; }
+    function overlaps(a,b){
+      if (a.date !== b.date) return false;
+      const sa = startDateTime(a), sb = startDateTime(b);
+      const ea = endDateTime(a) || new Date(sa.getTime()+3600000);
+      const eb = endDateTime(b) || new Date(sb.getTime()+3600000);
+      return sa < eb && sb < ea;
+    }
 
-        const item = btn.closest('.event-item');
-        if (!item) return;
+    // ===== External JSON mapping =====
+    function mapExternalToInternal(raw){
+      const isoDate = monthDayToISOThisYear(raw.date);
+      const location = Array.isArray(raw.address) ? raw.address.join(', ') : (raw.address || 'Philadelphia');
+      return {
+        id: crypto.randomUUID(),
+        title: raw.title || 'Untitled',
+        date: isoDate,
+        time: raw.time || '12:00 PM',
+        desc: raw.price ? `Price: ${raw.price}` : '',
+        location,
+        lat: null, lon: null,
+        favorited: false,
+        durationMinutes: normalizeDuration(raw.durationMinutes ?? raw.duration),
+        url: raw.url,
+        thumbnail: raw.thumbnail,
+        price: raw.price,
+      };
+    }
+    // quick helper to ingest one external event at runtime
+    window.ingestExternalJson = function(raw){
+      const ev = mapExternalToInternal(raw);
+      demoEvents.push(ev);
+      renderAllEvents(demoEvents);
+    }
 
-        const title = item.querySelector('.event-title')?.textContent?.trim() || 'Event';
-        const meta  = item.querySelector('.event-meta')?.textContent?.trim() || '';
-        const desc  = item.querySelector('.event-desc, .event-desc-link')?.textContent?.trim()
-                   || 'No description provided.';
+    // ===== Demo/Backend =====
+    async function fetchPhillyEvents(){
+      return [
+        { id: 'e1', title: 'Independence Hall Tour', date: offsetDay(2), time: '10:00 AM', desc: 'Guided tour of the birthplace of America.', location: '520 Chestnut St', lat: 39.9489, lon: -75.1500, favorited: true,  durationMinutes: 60 },
+        { id: 'e2', title: 'Reading Terminal Market Lunch', date: offsetDay(3), time: '12:30 PM', desc: 'Cheesesteaks, roast pork, donuts—food crawl.', location: '1136 Arch St', lat: 39.9534, lon: -75.1590, favorited: false, durationMinutes: 90 },
+        { id: 'e3', title: 'Museum of the American Revolution', date: offsetDay(5), time: '2:00 PM', desc: 'Revolutionary War exhibits.', location: '101 S 3rd St', lat: 39.9486, lon: -75.1452, favorited: true,  durationMinutes: 120 },
+        { id: 'e4', title: 'Spruce Street Harbor Park', date: offsetDay(5), time: '6:00 PM', desc: 'Hammocks, lights, snacks.', location: '301 S Christopher Columbus Blvd', lat: 39.9437, lon: -75.1403, favorited: false, durationMinutes: 105 },
+        { id: 'e5', title: 'Citizens Bank Park Game', date: offsetDay(8), time: '7:05 PM', desc: 'Phillies home game — BSL → NRG.', location: '1 Citizens Bank Way', lat: 39.9057, lon: -75.1665, favorited: false, durationMinutes: 180 },
+        { id: 'e6', title: 'Rocky Steps & Art Museum', date: offsetDay(4), time: '4:30 PM', desc: 'Run the steps, then the galleries.', location: '2600 Benjamin Franklin Pkwy', lat: 39.9656, lon: -75.1809, favorited: false, durationMinutes: 75 },
+        { id: 'e7', title: 'Magic Gardens', date: offsetDay(6), time: '1:00 PM', desc: 'Isaiah Zagar’s mosaic labyrinth.', location: '1020 South St', lat: 39.9426, lon: -75.1607, favorited: false, durationMinutes: 80 },
+      ];
+    }
 
-        popoutTitle.textContent = title;
-        popoutMeta.textContent  = meta;
-        popoutDesc.textContent  = desc;
+    // ===== State =====
+    let saved = new Map();
+    let selectedEventId = null;
+    let demoEvents = [];
 
-        // Extras (from data-*)
-        popoutExtras.innerHTML = '';
-        const start = item.dataset.start ? new Date(item.dataset.start) : null;
-        const end   = item.dataset.end   ? new Date(item.dataset.end)   : null;
-        const place = item.dataset.place || '';
+    // ===== Helpers =====
+    function offsetDay(d){
+      const today = new Date();
+      const y = today.getFullYear();
+      const m = today.getMonth();
+      const base = new Date(y, m, today.getDate() + d);
+      if (base.getMonth() !== m){
+        const last = new Date(y, m + 1, 0).getDate();
+        return `${y}-${String(m+1).padStart(2,'0')}-${String(last).padStart(2,'0')}`;
+      }
+      return `${base.getFullYear()}-${String(base.getMonth()+1).padStart(2,'0')}-${String(base.getDate()).padStart(2,'0')}`;
+    }
+    function fmtDateLabel(iso){
+      const d = new Date(iso + 'T00:00:00');
+      return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    }
+    function dayNum(iso){ return Number(iso.slice(-2)); }
+    function todayMonthInfo(){
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = now.getMonth();
+      const first = new Date(y, m, 1);
+      const daysInMonth = new Date(y, m + 1, 0).getDate();
+      const label = first.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+      return { y, m, daysInMonth, label };
+    }
 
-        if (start) {
-          const t = document.createElement('div');
-          t.className = 'popout-meta';
-          t.textContent = end
-            ? `${start.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'})} – ${end.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'})}`
-            : start.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
-          popoutExtras.appendChild(t);
+    // ===== Calendar =====
+    function renderCalendar(){
+      const grid = document.getElementById('calendarGrid');
+      const { daysInMonth, label } = todayMonthInfo();
+      document.getElementById('monthLabel').textContent = label;
+      grid.innerHTML = '';
+      for (let d = 1; d <= daysInMonth; d++){
+        const cell = document.createElement('button');
+        cell.type = 'button';
+        cell.className = 'day bg-white text-start';
+        cell.dataset.day = String(d);
+        const n = document.createElement('span');
+        n.className = 'day-number';
+        n.textContent = d;
+        cell.appendChild(n);
+        const list = document.createElement('div');
+        list.className = 'small';
+        cell.appendChild(list);
+        const todays = [...saved.values()].filter(ev => dayNum(ev.date) === d);
+        if (todays.length){
+          cell.classList.add('has-event');
+          todays.forEach(ev => {
+            const pill = document.createElement('div');
+            pill.className = 'badge text-bg-primary text-truncate w-100 mb-1';
+            pill.textContent = `${fmtTime(startDateTime(ev))}${endDateTime(ev)?'–'+fmtTime(endDateTime(ev)):''} ${ev.title}`;
+            pill.title = ev.title;
+            list.appendChild(pill);
+          });
         }
+        cell.addEventListener('click', () => {
+          const first = todays[0];
+          document.querySelectorAll('.day.selected').forEach(el => el.classList.remove('selected'));
+          cell.classList.add('selected');
+          if (first){ selectEvent(first.id); showDetails(); }
+        });
+        grid.appendChild(cell);
+      }
+    }
 
-        if (place) {
-          const p = document.createElement('div');
-          p.textContent = place;
-          popoutExtras.appendChild(p);
+    // ===== Saved list =====
+    function renderSaved(){
+      const wrap = document.getElementById('savedEvents');
+      wrap.innerHTML = '';
+      const tpl = document.getElementById('savedItemTpl');
+      if (!saved.size){
+        const empty = document.createElement('div');
+        empty.className = 'list-group-item text-secondary';
+        empty.textContent = 'No saved events yet. Use "Add to saved" below.';
+        wrap.appendChild(empty);
+      } else {
+        [...saved.values()].sort((a,b)=>a.date.localeCompare(b.date)).forEach(ev => {
+          const li = tpl.content.firstElementChild.cloneNode(true);
+          li.querySelector('.title').textContent = ev.title;
+          li.querySelector('.meta').textContent = `${fmtDateLabel(ev.date)} • ${timeRangeLabel(ev)} • ${ev.location}`;
+          li.addEventListener('click', (e) => {
+            if (e.target.closest('.btn-remove')) return;
+            selectEvent(ev.id);
+            highlightDay(ev.date);
+          });
+          li.querySelector('.btn-remove').addEventListener('click', () => {
+            saved.delete(ev.id);
+            renderSaved();
+            renderCalendar();
+          });
+          wrap.appendChild(li);
+        });
+      }
+      document.getElementById('toggleViewBtn').disabled = !selectedEventId;
+    }
+
+    // ===== Geolocation (optional) =====
+    let userCoords = null; function toRad(x){return x*Math.PI/180}
+    function haversine(a,b){ if(!a||!b) return null; const R=6371; const dLat=toRad(b.lat-a.lat), dLon=toRad(b.lon-a.lon); const lat1=toRad(a.lat), lat2=toRad(b.lat); const s=Math.sin(dLat/2)**2+Math.cos(lat1)*Math.cos(lat2)*Math.sin(dLon/2)**2; return 2*R*Math.asin(Math.sqrt(s)); }
+
+    // ===== All events =====
+    function renderAllEvents(list){
+      const wrap = document.getElementById('allEvents');
+      wrap.innerHTML = '';
+      const tpl = document.getElementById('allEventTpl');
+      const sorted = [...list].sort((a,b)=>{
+        const byDate = a.date.localeCompare(b.date);
+        if (userCoords && a.lat && b.lat){
+          const da = haversine(userCoords, {lat:a.lat,lon:a.lon}) || 0;
+          const db = haversine(userCoords, {lat:b.lat,lon:b.lon}) || 0;
+          if (Math.abs(da-db) > 0.25) return da - db;
         }
-
-        if (typeof popout.showModal === 'function') {
-          popout.showModal();
-        } else {
-          popout.setAttribute('open','');
-        }
+        return byDate;
       });
-
-      // Close button
-      document.querySelector('#eventPopout .popout-close')?.addEventListener('click', () => {
-        popout.close();
+      sorted.forEach(ev => {
+        const row = tpl.content.firstElementChild.cloneNode(true);
+        row.querySelector('.title').innerHTML = `${ev.title} <span class="badge text-bg-light location-pill">${CITY}</span>`;
+        const distance = userCoords && ev.lat ? ` • ~${(haversine(userCoords,{lat:ev.lat,lon:ev.lon})||0).toFixed(1)} km` : '';
+        row.querySelector('.meta').textContent = `${fmtDateLabel(ev.date)} • ${timeRangeLabel(ev)} • ${ev.location}${distance}`;
+        const conflict = [...saved.values()].some(s => overlaps(s, ev));
+        const conflictBadge = row.querySelector('.conflict-pill');
+        if (conflict) conflictBadge.classList.remove('d-none');
+        const btn = row.querySelector('.btn-save');
+        btn.textContent = saved.has(ev.id) ? 'Saved' : 'Add to saved';
+        btn.disabled = saved.has(ev.id);
+        btn.addEventListener('click', () => {
+          const hasConflict = [...saved.values()].some(s => overlaps(s, ev));
+          if (hasConflict && !confirm('This overlaps with an already-saved event. Save anyway?')) return;
+          saved.set(ev.id, ev);
+          renderSaved();
+          renderCalendar();
+          btn.textContent = 'Saved';
+          btn.disabled = true;
+        });
+        wrap.appendChild(row);
       });
+    }
 
-      // Click outside to close
-      popout.addEventListener('click', (e) => {
-        const rect = popout.getBoundingClientRect();
-        const inside =
-          e.clientX >= rect.left && e.clientX <= rect.right &&
-          e.clientY >= rect.top  && e.clientY <= rect.bottom;
-        if (!inside) popout.close();
-      });
+    // ===== Selection & details =====
+    function selectEvent(id){
+      selectedEventId = id;
+      const ev = [...saved.values(), ...demoEvents].find(x => x.id === id);
+      if (!ev) return;
+      const details = document.getElementById('detailsContent');
+      details.innerHTML = `
+        <h3 class="h5">${ev.title}</h3>
+        <div class="text-secondary mb-2">${fmtDateLabel(ev.date)} • ${timeRangeLabel(ev)} • ${ev.location}</div>
+        ${ev.url ? `<a href="${ev.url}" target="_blank" class="btn btn-sm btn-link px-0">Open link</a>` : ''}
+        <p class="mb-0 mt-2">${ev.desc || ''}</p>
+        <div class="mt-3 d-flex gap-2">
+          <button class="btn btn-outline-primary" id="ensureSavedBtn">${saved.has(id) ? 'Saved' : 'Add to saved'}</button>
+          <button class="btn btn-outline-secondary" id="jumpToDayBtn">Jump to day</button>
+        </div>`;
+      document.getElementById('toggleViewBtn').disabled = false;
+      document.getElementById('ensureSavedBtn').addEventListener('click', () => { saved.set(id, ev); renderSaved(); renderCalendar(); selectEvent(id); });
+      document.getElementById('jumpToDayBtn').addEventListener('click', () => { highlightDay(ev.date); showCalendar(); });
+    }
+    function highlightDay(iso){
+      const d = dayNum(iso);
+      document.querySelectorAll('.day.selected').forEach(el => el.classList.remove('selected'));
+      const cell = document.querySelector(`.day[data-day="${d}"]`);
+      if (cell){ cell.classList.add('selected'); cell.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'nearest' }); }
+      showDetails();
+    }
+    function showDetails(){ document.getElementById('calendarView').hidden = true; document.getElementById('detailsView').hidden = false; document.getElementById('toggleViewBtn').querySelector('span').textContent = 'Back to calendar'; }
+    function showCalendar(){ document.getElementById('calendarView').hidden = false; document.getElementById('detailsView').hidden = true; document.getElementById('toggleViewBtn').querySelector('span').textContent = 'Show details'; }
+
+    // ===== Wire buttons =====
+    document.getElementById('toggleViewBtn').addEventListener('click', () => {
+      const showingDetails = !document.getElementById('detailsView').hidden; if (showingDetails) showCalendar(); else showDetails();
+    });
+    document.getElementById('backToCalendarBtn').addEventListener('click', showCalendar);
+    document.getElementById('clearSavedBtn').addEventListener('click', () => { saved.clear(); renderSaved(); renderCalendar(); });
+    document.getElementById('addMockBtn').addEventListener('click', () => {
+      const ev = { id: crypto.randomUUID(), title: 'Custom Note', date: offsetDay(1), time: '3:00 PM', desc: 'Your custom reminder.', location: '—', lat: null, lon: null, durationMinutes: 30 };
+      saved.set(ev.id, ev); renderSaved(); renderCalendar();
+    });
+    document.getElementById('refreshBtn').addEventListener('click', async () => { demoEvents = await fetchPhillyEvents(); renderAllEvents(demoEvents); });
+    document.getElementById('useLocationBtn').addEventListener('click', async () => {
+      if (!navigator.geolocation) return alert('Geolocation not supported in this browser.');
+      navigator.geolocation.getCurrentPosition((pos)=>{ userCoords = { lat: pos.coords.latitude, lon: pos.coords.longitude }; renderAllEvents(demoEvents); }, ()=>{ alert('Could not get your location.'); }, { enableHighAccuracy:true, timeout:8000 });
+    });
+
+    // ===== Init =====
+    (async function init(){
+      demoEvents = await fetchPhillyEvents();
+      demoEvents.filter(e => e.favorited).forEach(e => saved.set(e.id, e));
+      renderSaved(); renderCalendar(); renderAllEvents(demoEvents);
     })();
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

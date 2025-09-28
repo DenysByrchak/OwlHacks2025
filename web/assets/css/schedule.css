@@ -1,73 +1,234 @@
+/* =========================================================
+   THEME TOKENS
+   ========================================================= */
+:root {
+  --c-bg: #fff;
+  --c-text: #111827;
+  --c-muted: #6b7280;
+  --c-border: #e5e7eb;
+  --c-ring: #3b82f6;
+  --c-primary: #3b82f6;
+  --c-primary-pressed: #2563eb;
+
+  --radius: 12px;
+  --radius-sm: 10px;
+  --shadow-lg: 0 20px 40px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.08);
+}
+
+/* =========================================================
+   LAYOUT
+   ========================================================= */
 #schedule {
   display: grid;
   grid-template-columns: 280px 1fr;
   gap: 16px;
-  min-height: 100vh; 
+  min-height: 100vh;
 }
 
-#saved-events {
-  overflow-y: auto;
-  overflow-x: hidden; 
-  max-height: calc(100vh - 140px); 
-  padding-right: 8px; 
-}
+html, body { overflow-x: hidden; }
 
+/* Left column (Saved events) */
 #saved-events > h2 {
   position: sticky;
   top: 0;
-  background: #fff;
+  background: var(--c-bg);
 }
 
-#events-list { list-style: none; margin: 0; padding: 0; }
+/* Right column (Detail panel) — desktop: no inner scroll */
+#detail-panel {}
+
+/* Lists reset */
+ul[role="list"],
+#events-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Event card */
 .event-item {
-  border: 1px solid #ddd;
-  border-radius: 10px;
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-sm);
   padding: 10px;
   margin-bottom: 10px;
-  background: #fff;
 }
 
-#detail-panel {
-  overflow-y: auto;
-  max-height: calc(100vh - 140px);
-}
-html, body {
-  overflow-x: hidden;
-}
-ul[role="list"] { list-style: none; margin: 0; padding: 0; }
-
+/* =========================================================
+   AGENDA / DAY GROUPING
+   ========================================================= */
 .day-group { margin: 30px 0; }
-.day-header { position: sticky; top: 0; background: #fff; padding: 6px 0; font-weight: 700; border-bottom: 1px solid #ddd; }
-.slot { border: 1px solid #ddd; border-radius: 8px; padding: 8px; margin: 8px 0; }
-.slot .when { font-weight: 600; margin-right: 6px; }
-.slot.conflict { border-left: 6px solid #dc2626; background: #fff6f6; }
-.slot .meta { color: #555; font-size: 12px; }
 
-#eventPopout {
-  width: min(640px, 92vw);
-  border: none;
-  border-radius: 12px;
-  padding: 0;
-  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+.day-header {
+  position: sticky;
+  top: 0;
+  background: var(--c-bg);
+  padding: 6px 0;
+  font-weight: 700;
+  border-bottom: 1px solid var(--c-border);
 }
-#eventPopout::backdrop { background: rgba(0,0,0,.4); }
+
+.slot {
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 8px;
+  margin: 8px 0;
+}
+
+.slot .when { font-weight: 600; margin-right: 6px; }
+.slot .meta { color: var(--c-muted); font-size: 12px; }
+
+.slot.conflict {
+  border-left: 6px solid #dc2626;
+  background: #fff6f6;
+}
+
+/* =========================================================
+   DIALOGS (sheet-style) — applies to both .sheet and #eventPopout
+   ========================================================= */
+dialog.sheet,
+#eventPopout {
+  width: min(680px, 92vw);
+  border: 0;
+  border-radius: var(--radius);
+  padding: 0;
+  background: var(--c-bg);
+  box-shadow: var(--shadow-lg);
+  color: var(--c-text);
+}
+
+dialog.sheet::backdrop,
+#eventPopout::backdrop {
+  background: rgba(0,0,0,.40);
+}
+
+/* Legacy popout structure support */
 #eventPopoutForm { display: flex; flex-direction: column; }
 .popout-header {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:14px 16px; border-bottom:1px solid #e5e5e5;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--c-border);
 }
-.popout-body { padding:16px; }
+.popout-body { padding: 16px; }
 .popout-close {
-  border:0; background:transparent; font-size:18px; line-height:1; cursor:pointer;
+  border: 0; background: transparent; font-size: 18px; line-height: 1; cursor: pointer;
 }
-.popout-meta { color:#666; font-size:14px; margin-bottom:8px; }
-.popout-extras { margin-top:12px; display:grid; gap:8px; }
+.popout-meta { color: var(--c-muted); font-size: 14px; margin-bottom: 8px; }
+.popout-extras { margin-top: 12px; display: grid; gap: 8px; }
 
-.event-actions { display:flex; gap:8px; margin-top:8px; }
-.btn-del, .btn-details {
-  border:1px solid #ddd; background:#fafafa; border-radius:8px; padding:6px 10px; cursor:pointer;
+/* Sheet utility classes (for newer dialogs) */
+.sheet__header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--c-border);
 }
-.btn-del:hover { background:#ffecec; border-color:#f3c2c2; }
-.btn-del { color:#b00020; }
-.fade-out { opacity:0; height:0 !important; margin:0 !important; padding-top:0 !important; padding-bottom:0 !important; transition: all .25s ease; overflow:hidden; }
+.sheet__title { margin: 0; font-size: 1.125rem; font-weight: 600; }
+.sheet__close {
+  appearance: none; border: 0; background: transparent; cursor: pointer;
+  width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center;
+}
+.sheet__close:hover { background: #f3f4f6; }
+.sheet__body { padding: 16px 20px; display: grid; gap: 14px; }
+.sheet__footer {
+  display: flex; justify-content: flex-end; gap: 10px; padding: 14px 20px;
+  border-top: 1px solid var(--c-border);
+}
 
+/* Rounded form fields */
+.field { display: grid; gap: 6px; }
+.field label { font-size: .9rem; color: var(--c-muted); }
+.input, .textarea {
+  width: 100%; background: #fff; color: var(--c-text);
+  border: 1px solid var(--c-border); border-radius: 10px;
+  padding: 10px 12px; font-size: .95rem; line-height: 1.3;
+}
+.textarea { min-height: 84px; resize: vertical; }
+.input:focus, .textarea:focus {
+  outline: 2px solid transparent; border-color: var(--c-ring);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--c-ring) 35%, transparent);
+}
+.hint { font-size: .85rem; color: var(--c-muted); }
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+.btn,
+.btn-details,
+.btn-del {
+  appearance: none;
+  border: 1px solid var(--c-border);
+  background: #fafafa;
+  color: var(--c-text);
+  border-radius: 10px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn:hover,
+.btn-details:hover,
+.btn-del:hover { background: #f3f4f6; }
+
+.btn-primary {
+  background: var(--c-primary);
+  border-color: var(--c-primary);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: var(--c-primary-pressed);
+  border-color: var(--c-primary-pressed);
+}
+.btn-ghost { background: transparent; }
+
+/* Specific delete hover treatment */
+.btn-del:hover {
+  background: #ffecec;
+  border-color: #f3c2c2;
+}
+.btn-del { color: #b00020; }
+
+/* Inline actions container */
+.event-actions { display: flex; gap: 8px; margin-top: 8px; }
+
+/* Remove animation */
+.fade-out {
+  opacity: 0;
+  height: 0 !important;
+  margin: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  transition: all .25s ease;
+  overflow: hidden;
+}
+
+/* =========================================================
+   RESPONSIVE
+   - Desktop: no inner scroll
+   - Mobile: inner scroll for left/right panes
+   ========================================================= */
+@media (min-width: 769px) {
+  /* Desktop: let panels grow naturally */
+  #saved-events,
+  #detail-panel {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Stack columns on mobile */
+  #schedule { grid-template-columns: 1fr; }
+
+  /* Mobile: enable inner scrolling */
+  #saved-events,
+  #detail-panel {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    max-height: calc(100vh - 140px) !important;
+    padding-right: 8px; /* avoid scrollbar overlay */
+  }
+
+  /* Keep headings sticky on mobile */
+  #saved-events > h2,
+  .day-header { position: sticky; top: 0; background: var(--c-bg); z-index: 1; }
+}
