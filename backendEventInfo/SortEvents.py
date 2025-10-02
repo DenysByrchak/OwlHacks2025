@@ -2,6 +2,12 @@ import requests
 import json
 from geopy.distance import geodesic
 from datetime import datetime
+import sys
+import os
+
+# Add parent directory to path to import config
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from config import GOOGLE_MAPS_API_KEY
 
 def geocode_address(address_lines, api_key):
     address = ", ".join(address_lines)
@@ -14,15 +20,14 @@ def geocode_address(address_lines, api_key):
     return None
 
 def sort_events(lat, lng):
-    google_maps_api_key = "AIzaSyBs86ACXN8GZfcrTzaTgenOFwaXJ-HmQIQ"
     user_location = (lat, lng)  # Example: North Philly
 
     # 🔹 Load events
-    with open("events_today.json", "r") as f:
+    with open("backendEventInfo/events_today.json", "r") as f:
         events = json.load(f)
     # 🔁 Add distance to each event
     for event in events:
-        event_location = geocode_address(event["address"], google_maps_api_key)
+        event_location = geocode_address(event["address"], GOOGLE_MAPS_API_KEY)
         if event_location:
             event["distance_km"] = geodesic(user_location, event_location).km
         else:
@@ -32,7 +37,7 @@ def sort_events(lat, lng):
     events_sorted = sorted(events, key=lambda x: x["distance_km"])
 
     # 💾 Save sorted list
-    with open("events_sorted_for_today.json", "w") as f:
+    with open("backendEventInfo/events_sorted_for_today.json", "w") as f:
         json.dump(events_sorted, f, indent=2)
 
     print("Sorted events saved to events_sorted_for_today.json")
@@ -48,7 +53,7 @@ def filter_and_sort_events(events, excluded_time):
 
 def remove_time(start_time_str, end_time_str):
     # 🔹 Load your event data
-    with open("events_sorted_for_today.json", "r") as f:
+    with open("backendEventInfo/events_sorted_for_today.json", "r") as f:
         events = json.load(f)
 
     # 🔹 Convert time strings to datetime objects
@@ -66,7 +71,7 @@ def remove_time(start_time_str, end_time_str):
         except Exception as e:
             print(f"Skipping event due to time parse error: {event.get('title')}")
     
-    with open("events_sorted_for_today.json", "w") as f:
+    with open("backendEventInfo/events_sorted_for_today.json", "w") as f:
         json.dump(filtered_events, f, indent=2)        
     
     print(f"Saved filtered events to events_sorted_for_today.json (excluded range: {start_time_str}–{end_time_str})")

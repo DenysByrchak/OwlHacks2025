@@ -1,8 +1,13 @@
 from serpapi import GoogleSearch
+import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from config import GOOGLE_SEARCH_API_KEY
 
 def get_food(location):
   params = {
-    "api_key": "668a5dbed851136e8f139735e73e282bd67c328c9d25d355cef71cd8bfbef34e",
+    "api_key": GOOGLE_SEARCH_API_KEY,
     "engine": "google",
     "q": "Food",
     "google_domain": "google.com",

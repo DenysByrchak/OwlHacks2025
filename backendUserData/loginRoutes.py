@@ -1,18 +1,21 @@
 import json
 import os
 import sqlite3
-from dotenv import load_dotenv
+import sys
 
-from flask import Flask, redirect, request, url_for
+from flask import redirect, request, url_for
 from flask_login import (
     LoginManager,
-    current_user,
     login_required,
     login_user,
     logout_user,
 )
 from oauthlib.oauth2 import WebApplicationClient
 import requests
+
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from config import GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_DISCOVERY_URL
 
 # Internal imports
 from .db import init_db_command, get_user
@@ -29,13 +32,7 @@ from .user import User
 
 
 def connect_login_routes(app):
-    # Configuration
-    load_dotenv()
 
-    GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
-    GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
-    GOOGLE_DISCOVERY_URL = os.getenv("GOOGLE_DISCOVERY_URL")
-    # OAuth 2 client setup
     client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
     login_manager = LoginManager()
@@ -46,25 +43,11 @@ def connect_login_routes(app):
     except sqlite3.OperationalError:
         pass
 
-    # Flask-Login helper to retrieve a user from our db
+
     @login_manager.user_loader
     def load_user(user_id):
         return User.get(user_id)
 
-    # @app.route("/")
-    # def index():
-
-    #     if current_user.is_authenticated:
-    #         return (
-    #             "<p>{} Email: {}</p>"
-    #             "<div><p>Google Profile Picture:</p>"
-    #             '<img src="{}" alt="Google profile pic"></img></div>'
-    #             '<a class="button" href="/logout">Logout</a>'.format(
-    #                 current_user.name, current_user.email, current_user.profile_pic
-    #             )
-    #         )
-    #     else:
-    #         return '<a class="button" href="/login">Google Login</a>'
 
     @app.route("/login")
     def login():
@@ -125,9 +108,6 @@ def connect_login_routes(app):
             user.create()
 
         login_user(user)
-
-        # Test schedule event
-        # user.schedule_event("Event title", "today", "12PM", "12AM",  "your soul", "child sacrifice")
 
         return redirect(url_for("serve_landing"))
 

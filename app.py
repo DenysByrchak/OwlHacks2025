@@ -1,56 +1,54 @@
 from flask import Flask, send_from_directory, jsonify, request, render_template
 from flask_login import current_user, login_required
 import json
-from GenerateEvents import generate_events
-from SortEvents import sort_events, remove_time
+from backendEventInfo.eventData import generate_events, init_events
+# from SortEvents import sort_events, remove_time
 from backendUserData.loginRoutes import connect_login_routes
-import requests
-import os
-
+from config import SECRET_KEY
 
 app = Flask(__name__, static_folder="web", template_folder="web")
-app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(69)
+app.secret_key = SECRET_KEY
 
 connect_login_routes(app)
 
-# 🔹 Serve landing page at root
+
 @app.route("/")
 def serve_landing():
     return render_template("pages/landing.html", current_user=current_user)
 
-# 🔹 Serve About page
+
 @app.route("/about")
 def serve_about():
     return render_template("pages/about.html", current_user=current_user)
 
-# 🔹 Serve Account page
+
 @app.route("/account")
 def serve_account():
     return render_template("pages/account.html", current_user=current_user)
 
-# 🔹 Serve Add-to-Schedule page
+
 @app.route("/add-to-schedule")
 def serve_add_to_schedule():
     return render_template("pages/add-to-schedule.html", current_user=current_user)
 
-# 🔹 Serve Events page
+
 @app.route("/events")
 def serve_events_page():
     return render_template("pages/events.html", current_user=current_user)
 
-# 🔹 Serve Schedule page
+
 @app.route("/schedule")
 def serve_schedule():
     return render_template("pages/schedule.html", current_user=current_user)
 
-# 🔹 Serve Partials
+
 @app.route("/partials/<path:path>")
 def serve_partials(path):
     if path == "nav.html":
         return render_template("partials/nav.html", current_user=current_user)
     return send_from_directory("web/partials", path)
 
-# 🔹 Serve Static Assets
+
 @app.route("/assets/<path:path>")
 def serve_assets(path):
     return send_from_directory("web/assets", path)
@@ -63,7 +61,7 @@ def receive_location():
     print(f"Received user location: {lat}, {lng}")
     parse_events(lat, lng)
     
-    with open("events_sorted_for_today.json", "r") as f:
+    with open("backendEventInfo/events_today.json", "r") as f:
         events = json.load(f)
     
     return jsonify({
@@ -73,17 +71,17 @@ def receive_location():
     })
     
 
-# 🔹 Serve Event Data API
+# Used to get current events
 @app.route("/api/events")
 def serve_events():
     try:
-        with open("events_sorted_for_today.json", "r") as f:
+        with open("backendEventInfo/events_today.json", "r") as f:
             events = json.load(f)
         return jsonify(events)
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-# 🔹 User Authentication Status API
+# Check if user logged into Google Account
 @app.route("/api/user-status")
 def user_status():
     return jsonify({
@@ -91,7 +89,7 @@ def user_status():
         "user_id": current_user.id if current_user.is_authenticated else None
     })
 
-# 🔹 Schedule Event API
+
 @app.route("/api/schedule-event", methods=['POST'])
 @login_required
 def schedule_event():
@@ -143,12 +141,9 @@ def delete_user_event():
         return jsonify({"error": str(e)}), 500
 
 def parse_events(lat, lng):
-    print("🚀 Running Philly Tour pipeline sorting")
     generate_events(lat, lng)
-    sort_events(lat, lng)
-    # remove_time("2:00 PM", "5:00 PM")
-    
-# 🔹 Run pipeline before server starts
+    # sort_events(lat, lng)
+
 if __name__ == "__main__":
-    parse_events(39.952583, -75.165222)
+    init_events()
     app.run(debug=True, ssl_context="adhoc")
